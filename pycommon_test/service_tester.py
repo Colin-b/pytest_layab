@@ -45,6 +45,16 @@ class JSONTestCase(TestCase):
         actual = json.loads(response.data.decode('utf-8'))
         self.assertEqual(expected, actual)
 
+    def assert_json_regex(self, response, expected):
+        """
+        Assert that response is containing the following JSON.
+
+        :param response: Received query response.
+        :param expected: Expected python structure corresponding to the JSON (with regex in values).
+        """
+        actual = json.loads(response.data.decode('utf-8'))
+        self.assertRegex(f'{actual}', f'{expected}')
+
     def post_json(self, url, json_body):
         """
         Send a POST request to this URL.
