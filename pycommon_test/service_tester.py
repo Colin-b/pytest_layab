@@ -10,14 +10,14 @@ logger = logging.getLogger(__name__)
 class JSONTestCase(TestCase):
 
     def setUp(self):
-        self.log_test_start()
+        self._log_start()
         self.maxDiff = None
         self.clear_database()
         self.fill_database()
 
     def tearDown(self):
         self.clear_database()
-        self.log_test_end()
+        self._log_end()
 
     def clear_database(self):
         # Do nothing by default
@@ -27,11 +27,11 @@ class JSONTestCase(TestCase):
         # Do nothing by default
         pass
 
-    def log_test_start(self):
+    def _log_start(self):
         logger.info(f'-------------------------------')
         logger.info(f'Start of {self._testMethodName}')
 
-    def log_test_end(self):
+    def _log_end(self):
         logger.info(f'End of {self._testMethodName}')
         logger.info(f'-------------------------------')
 

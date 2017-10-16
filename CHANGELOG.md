@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 1.2.1 (2017-10-16) ##
+
+### Enhancements ###
+
+- Logging start and end of a test case should not be considered as a test by itself.
+
 ## Version 1.2.0 (2017-10-16) ##
 
 ### Enhancements ###
