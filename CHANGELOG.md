@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 1.3.0 (2017-10-16) ##
+
+### Enhancements ###
+
+- Added kwargs to put/post methods so that headers/auth can be provided.
+
 ## Version 1.2.1 (2017-10-16) ##
 
 ### Enhancements ###

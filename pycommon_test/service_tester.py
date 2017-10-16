@@ -81,7 +81,7 @@ class JSONTestCase(TestCase):
                 self.assertEqual(expected_method, actual_method)
                 self.assertEqual(expected_parameters, actual_parameters)
 
-    def post_json(self, url, json_body):
+    def post_json(self, url, json_body, **kwargs):
         """
         Send a POST request to this URL.
 
@@ -89,9 +89,9 @@ class JSONTestCase(TestCase):
         :param json_body: Python structure corresponding to the JSON to be sent.
         :return: Received response.
         """
-        return self.client.post(url, data=json.dumps(json_body), content_type='application/json')
+        return self.client.post(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
 
-    def put_json(self, url, json_body):
+    def put_json(self, url, json_body, **kwargs):
         """
         Send a PUT request to this URL.
 
@@ -99,4 +99,4 @@ class JSONTestCase(TestCase):
         :param json_body: Python structure corresponding to the JSON to be sent.
         :return: Received response.
         """
-        return self.client.put(url, data=json.dumps(json_body), content_type='application/json')
+        return self.client.put(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
