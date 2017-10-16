@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 1.2.0 (2017-10-16) ##
+
+### Enhancements ###
+
+- Ability to validate a JSON Swagger response.
+
 ## Version 1.1.0 (2017-10-16) ##
 
 ### Enhancements ###
