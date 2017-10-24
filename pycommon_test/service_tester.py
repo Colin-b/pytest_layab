@@ -74,9 +74,15 @@ class JSONTestCase(TestCase):
             self.assertEqual(len(expected_path), len(actual_path))
             for method_key, actual_method in actual_path.items():
                 expected_method = expected_path[method_key]
-                expected_parameters = sorted(expected_method['parameters'], key=lambda parameter: parameter['name'])
+                if 'parameters' in expected_method:
+                    expected_parameters = sorted(expected_method['parameters'], key=lambda parameter: parameter['name'])
+                else:
+                    expected_parameters = None
                 expected_method['parameters'] = None
-                actual_parameters = sorted(actual_method['parameters'], key=lambda parameter: parameter['name'])
+                if 'parameters' in actual_method:
+                    actual_parameters = sorted(actual_method['parameters'], key=lambda parameter: parameter['name'])
+                else:
+                    actual_parameters = None
                 actual_method['parameters'] = None
                 self.assertEqual(expected_method, actual_method)
                 self.assertEqual(expected_parameters, actual_parameters)
