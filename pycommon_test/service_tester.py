@@ -3,7 +3,7 @@ import json
 import logging
 from flask_testing import TestCase
 
-os.environ['ENVIRONMENT'] = 'test'  # Ensure that test configuration will be loaded
+os.environ['SERVER_ENVIRONMENT'] = 'test'  # Ensure that test configuration will be loaded
 logger = logging.getLogger(__name__)
 
 

@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 1.4.0 (2017-11-13) ##
+
+### Enhancements ###
+
+- Use SERVER_ENVIRONMENT instead of deprecated ENVIRONMENT variable.
+
 ## Version 1.3.1 (2017-10-24) ##
 
 ### Bug fixes ###
