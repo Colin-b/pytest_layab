@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 1.5.0 (2017-12-07) ##
+
+### Enhancements ###
+
+- Introduce services_handler module to start and stop test services.
+
 ## Version 1.4.0 (2017-11-13) ##
 
 ### Enhancements ###
