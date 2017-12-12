@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 1.6.0 (2017-12-12) ##
+
+### Enhancements ###
+
+- services_handler can be called with more than the port argument.
+
 ## Version 1.5.0 (2017-12-07) ##
 
 ### Enhancements ###

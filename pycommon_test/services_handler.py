@@ -10,7 +10,9 @@ logger = logging.getLogger(__name__)
 def start_services(*services):
     del service_processes[:]
     for service in services:
-        p = multiprocessing.Process(target=service[0].start_server, args=(service[1],))
+        if len(service) < 2:
+            raise Exception('Each service should contains at least 2 parameters, the module and the port.')
+        p = multiprocessing.Process(target=service[0].start_server, args=tuple(service[1:]))
         service_processes.append(p)
         p.start()
         _wait_for_server_to_be_started('127.0.0.1', service[1])
