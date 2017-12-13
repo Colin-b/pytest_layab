@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 1.6.1 (2017-12-13) ##
+
+### Bug fixes ###
+
+- service_tester.assert_json now consider lists as unordered.
+
 ## Version 1.6.0 (2017-12-12) ##
 
 ### Enhancements ###

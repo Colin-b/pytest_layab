@@ -43,7 +43,10 @@ class JSONTestCase(TestCase):
         :param expected: Expected python structure corresponding to the JSON.
         """
         actual = json.loads(response.data.decode('utf-8'))
-        self.assertEqual(expected, actual)
+        if isinstance(actual, list):  # List order does not matter in JSON
+            self.assertCountEqual(expected, actual)
+        else:
+            self.assertEqual(expected, actual)
 
     def assert_json_regex(self, response, expected):
         """
