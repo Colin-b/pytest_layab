@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 1.7.0 (2018-03-05) ##
+
+### Enhancements ###
+
+- Introduce flask_restplus_mock.TestAPI to mock a Flask Rest Plus API.
+
 ## Version 1.6.1 (2017-12-13) ##
 
 ### Bug fixes ###
