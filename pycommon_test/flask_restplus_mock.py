@@ -8,6 +8,19 @@ class TestAPI:
 
     @classmethod
     def model(cls, name, fields):
+        """
+        Return a mock of a model containing the following extra fields:
+
+            - name: Provided model name.
+            - fields: All Flask RestPlus fields provided during model creation.
+            - fields_required: Dictionary of field name: required boolean.
+            - fields_example: Dictionary of field name: example value.
+            - fields_description: Dictionary of field name: description string.
+            - fields_enum: Dictionary of field name: enum choices.
+            - fields_default: Dictionary of field name: default value.
+            - fields_readonly: Dictionary of field name: read only boolean.
+            - fields_flask_type: Dictionary of field name: flask type string representation.
+        """
         def _fields_values(all_fields: dict, value_from_field) -> dict:
             values = {}
 
