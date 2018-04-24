@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 1.7.1 (2018-03-24) ##
+
+### Bug fixes ###
+
+- Better error message in case of swagger validation failure.
+
 ## Version 1.7.0 (2018-03-05) ##
 
 ### Enhancements ###

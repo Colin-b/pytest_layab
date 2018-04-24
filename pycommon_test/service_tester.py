@@ -68,17 +68,17 @@ class JSONTestCase(TestCase):
         actual = json.loads(response.data.decode('utf-8'))
         actual_paths = actual['paths']
         actual['paths'] = None
-        expected_paths = expected['paths']
+        expected_paths = expected.get('paths', {})
         expected['paths'] = None
         self.assertEqual(expected, actual)
-        self.assertEqual(len(expected_paths), len(actual_paths))
+        self.assertEqual(len(expected_paths), len(actual_paths), msg='Different number of paths.')
         for path_key, actual_path in actual_paths.items():
-            expected_path = expected_paths[path_key]
-            self.assertEqual(len(expected_path), len(actual_path))
+            expected_path = expected_paths.get(path_key, {})
+            self.assertEqual(len(expected_path), len(actual_path), msg=f'Different number of {path_key} methods.')
             for method_key, actual_method in actual_path.items():
-                expected_method = expected_path[method_key]
+                expected_method = expected_path.get(method_key, {})
                 if 'parameters' in expected_method:
-                    expected_parameters = sorted(expected_method['parameters'], key=lambda parameter: parameter['name'])
+                    expected_parameters = sorted(expected_method.get('parameters', {}), key=lambda parameter: parameter.get('name', None))
                 else:
                     expected_parameters = None
                 expected_method['parameters'] = None
