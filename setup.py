@@ -7,7 +7,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         # Used to manage testing of a Flask application
-        'flask_testing==0.6.2',
+        'flask_testing==0.7.1',
         # Used to manage testing of Flask RestPlus components
         'flask-restplus==0.10.1',
     ],

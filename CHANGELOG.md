@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 1.7.2 (2018-05-04) ##
+
+### Bug fixes ###
+
+- Handle OpenAPI parameters set at path and paths level.
+
 ## Version 1.7.1 (2018-03-24) ##
 
 ### Bug fixes ###

@@ -72,9 +72,15 @@ class JSONTestCase(TestCase):
         expected['paths'] = None
         self.assertEqual(expected, actual)
         self.assertEqual(len(expected_paths), len(actual_paths), msg='Different number of paths.')
+        actual_parameters = actual_paths.pop('parameters', None)
+        if actual_parameters:
+            self.assertEqual(expected_paths.get('parameters'), actual_parameters)
         for path_key, actual_path in actual_paths.items():
             expected_path = expected_paths.get(path_key, {})
             self.assertEqual(len(expected_path), len(actual_path), msg=f'Different number of {path_key} methods.')
+            actual_parameters = actual_path.pop('parameters', None)
+            if actual_parameters:
+                self.assertEqual(expected_path.get('parameters'), actual_parameters)
             for method_key, actual_method in actual_path.items():
                 expected_method = expected_path.get(method_key, {})
                 if 'parameters' in expected_method:
