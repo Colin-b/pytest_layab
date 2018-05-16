@@ -66,7 +66,7 @@ class JSONTestCase(TestCase):
         :param expected: Expected python structure corresponding to the JSON.
         """
         actual = json.loads(response.data.decode('utf-8'))
-        actual_paths = actual['paths']
+        actual_paths = actual['paths'] or {}
         actual['paths'] = None
         expected_paths = expected.get('paths', {})
         expected['paths'] = None

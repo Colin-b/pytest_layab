@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 1.7.3 (2018-05-16) ##
+
+### Bug fixes ###
+
+- Proper error message in case user expects None in paths.
+
 ## Version 1.7.2 (2018-05-04) ##
 
 ### Bug fixes ###
