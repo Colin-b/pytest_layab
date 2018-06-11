@@ -17,7 +17,13 @@ class TestConnection:
         return self.should_connect
 
     def storeFile(self, share_drive_path: str, file_path: str, file):
-        TestConnection.stored_files[(share_drive_path, file_path)] = file.read().decode().replace('\r\n', '\n')
+        file_content = file.read()
+        try:
+            # Try to store string in order to compare it easily
+            file_content = file_content.decode().replace('\r\n', '\n')
+        except UnicodeDecodeError:
+            pass  # Keep bytes when content is not str compatible (eg. Zip file)
+        TestConnection.stored_files[(share_drive_path, file_path)] = file_content
 
     def rename(self, share_drive_path: str, initial_file_path: str, new_file_path: str):
         TestConnection.stored_files[(share_drive_path, new_file_path)] = TestConnection.stored_files[(share_drive_path, initial_file_path)]
