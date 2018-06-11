@@ -20,10 +20,9 @@ class TestConnection:
         TestConnection.stored_files[(share_drive_path, new_file_path)] = TestConnection.stored_files[(share_drive_path, initial_file_path)]
 
     def retrieveFile(self, share_drive_path: str, file_path: str, file):
-        retrieved_file_path = TestConnection.files_to_retrieve.get((share_drive_path, file_path))
-        if retrieved_file_path:
-            with open(retrieved_file_path, 'rb') as file_to_retrieve:
-                file.write(file_to_retrieve.read())
+        retrieved_file_content = TestConnection.files_to_retrieve.get((share_drive_path, file_path))
+        if retrieved_file_content is not None:
+            file.write(str.encode(retrieved_file_content))
 
     @classmethod
     def reset(cls):
