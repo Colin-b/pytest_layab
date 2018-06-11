@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 1.8.0 (2018-06-11) ##
+
+### Enhancements ###
+
+- Add a Mock for Samba (Windows <-> Linux connections).
+
 ## Version 1.7.3 (2018-05-16) ##
 
 ### Bug fixes ###
