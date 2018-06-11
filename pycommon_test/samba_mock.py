@@ -7,8 +7,8 @@ class TestConnection:
     stored_files = {}
     files_to_retrieve = {}
 
-    def __init__(self, *args, **kwargs):
-        pass
+    def __init__(self, user_name, password, test_name, machine_name, *args, **kwargs):
+        self.remote_name = machine_name
 
     def connect(self, *args):
         return self.should_connect
