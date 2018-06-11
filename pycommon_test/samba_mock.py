@@ -1,3 +1,6 @@
+import os.path
+
+
 class TestConnection:
     """
     Mock a Samba Connection object.
@@ -22,7 +25,10 @@ class TestConnection:
     def retrieveFile(self, share_drive_path: str, file_path: str, file):
         retrieved_file_content = TestConnection.files_to_retrieve.get((share_drive_path, file_path))
         if retrieved_file_content is not None:
-            file.write(str.encode(retrieved_file_content))
+            if os.path.isfile(retrieved_file_content):
+                file.write(open(retrieved_file_content, mode='rb').read())
+            else:
+                file.write(str.encode(retrieved_file_content))
 
     @classmethod
     def reset(cls):
