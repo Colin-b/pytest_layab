@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 1.8.1 (2018-06-11) ##
+
+### Bug fixes ###
+
+- Samba mock now save remote name.
+
 ## Version 1.8.0 (2018-06-11) ##
 
 ### Enhancements ###
