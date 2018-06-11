@@ -25,6 +25,12 @@ class TestConnection:
             with open(retrieved_file_path, 'rb') as file_to_retrieve:
                 file.write(file_to_retrieve.read())
 
+    @classmethod
+    def reset(cls):
+        cls.should_connect = True
+        cls.stored_files.clear()
+        cls.files_to_retrieve.clear()
+
 
 import smb.SMBConnection
 
