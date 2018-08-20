@@ -8,7 +8,7 @@ List all changes in various categories:
 
 ## Version 1.9.1 (2018-08-20) ##
 
-### Enhancements ###
+### Bug fixes ###
 
 - Upgrade to last version of dependencies.
 
