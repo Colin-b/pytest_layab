@@ -9,6 +9,6 @@ setup(
         # Used to manage testing of a Flask application
         'flask_testing==0.7.1',
         # Used to manage testing of Flask RestPlus components
-        'flask-restplus==0.10.1',
+        'flask-restplus==0.11.0',
     ],
 )
