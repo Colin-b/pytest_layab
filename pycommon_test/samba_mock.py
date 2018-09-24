@@ -1,15 +1,5 @@
 import os.path
 
-
-class File:
-    filename: str
-
-    @classmethod
-    def set_filename(cls, filename):
-        cls.filename = filename
-        return cls
-
-
 class TestConnection:
     """
     Mock a Samba Connection object.
@@ -46,7 +36,7 @@ class TestConnection:
                 file.write(str.encode(retrieved_file_content))
 
     def listPath(self, service_name: str, path: str, pattern = '*'):
-        return [File.set_filename(os.path.basename(file_path)) for share_drive_path, file_path in TestConnection.stored_files]
+        return [os.path.basename(file_path) for share_drive_path, file_path in TestConnection.stored_files if os.path.basename(file_path) == pattern]
 
     @classmethod
     def reset(cls):
