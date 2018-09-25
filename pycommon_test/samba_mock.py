@@ -27,7 +27,7 @@ class TestConnection:
         TestConnection.stored_files[(share_drive_path, file_path)] = file_content
 
     def rename(self, share_drive_path: str, initial_file_path: str, new_file_path: str):
-        TestConnection.stored_files[(share_drive_path, new_file_path)] = TestConnection.stored_files.pop((share_drive_path, initial_file_path))
+        TestConnection.stored_files[(share_drive_path, new_file_path)] = TestConnection.stored_files.pop((share_drive_path, initial_file_path), None)
 
     def retrieveFile(self, share_drive_path: str, file_path: str, file):
         retrieved_file_content = TestConnection.files_to_retrieve.get((share_drive_path, file_path))
