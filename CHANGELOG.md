@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 1.10.0 (2018-09-24) ##
+
+### Enhancements ###
+
+- Samba mock now supports listPath method.
+
 ## Version 1.9.1 (2018-08-20) ##
 
 ### Bug fixes ###

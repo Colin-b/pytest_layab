@@ -1,5 +1,5 @@
 import os.path
-
+import re
 
 class TestConnection:
     """
@@ -35,6 +35,9 @@ class TestConnection:
                 file.write(open(retrieved_file_content, mode='rb').read())
             else:
                 file.write(str.encode(retrieved_file_content))
+
+    def listPath(self, service_name: str, path: str, filename: str):
+        return [os.path.basename(file_path) for _, file_path in TestConnection.stored_files if os.path.basename(file_path) == filename]
 
     @classmethod
     def reset(cls):
