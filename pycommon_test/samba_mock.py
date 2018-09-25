@@ -1,5 +1,6 @@
 import os.path
 import re
+from smb.smb_structs import OperationFailure
 
 class TestConnection:
     """
@@ -27,6 +28,7 @@ class TestConnection:
 
     def rename(self, share_drive_path: str, initial_file_path: str, new_file_path: str):
         TestConnection.stored_files[(share_drive_path, new_file_path)] = TestConnection.stored_files[(share_drive_path, initial_file_path)]
+        del TestConnection.stored_files[(share_drive_path, initial_file_path)]
 
     def retrieveFile(self, share_drive_path: str, file_path: str, file):
         retrieved_file_content = TestConnection.files_to_retrieve.get((share_drive_path, file_path))
@@ -36,8 +38,12 @@ class TestConnection:
             else:
                 file.write(str.encode(retrieved_file_content))
 
-    def listPath(self, service_name: str, path: str, filename: str):
-        return [os.path.basename(file_path) for _, file_path in TestConnection.stored_files if os.path.basename(file_path) == filename]
+    def listPath(self, service_name: str, path: str, pattern='*'):
+        files_list = [os.path.basename(file_path) for _, file_path in TestConnection.stored_files if
+                re.search(pattern, os.path.basename(file_path))]
+        if not files_list:
+            raise OperationFailure(None, None)
+        return files_list
 
     @classmethod
     def reset(cls):
