@@ -10,7 +10,7 @@ List all changes in various categories:
 
 ### Enhancements ###
 
-- Samba mock add list path mock.
+- Samba mock now supports listPath method.
 
 ## Version 1.9.1 (2018-08-20) ##
 
