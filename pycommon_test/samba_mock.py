@@ -1,6 +1,13 @@
 import os.path
 import re
+from typing import List
+from collections import namedtuple
+
 from smb.smb_structs import OperationFailure
+from smb.base import SharedFile
+
+SharedFileMock = namedtuple('SharedFileMock', ['filename'])
+
 
 class TestConnection:
     """
@@ -17,7 +24,7 @@ class TestConnection:
     def connect(self, *args):
         return self.should_connect
 
-    def storeFile(self, share_drive_path: str, file_path: str, file):
+    def storeFile(self, share_drive_path: str, file_path: str, file) -> int:
         file_content = file.read()
         try:
             # Try to store string in order to compare it easily
@@ -25,11 +32,12 @@ class TestConnection:
         except UnicodeDecodeError:
             pass  # Keep bytes when content is not str compatible (eg. Zip file)
         TestConnection.stored_files[(share_drive_path, file_path)] = file_content
+        return 0
 
-    def rename(self, share_drive_path: str, initial_file_path: str, new_file_path: str):
+    def rename(self, share_drive_path: str, initial_file_path: str, new_file_path: str) -> None:
         TestConnection.stored_files[(share_drive_path, new_file_path)] = TestConnection.stored_files.pop((share_drive_path, initial_file_path), None)
 
-    def retrieveFile(self, share_drive_path: str, file_path: str, file):
+    def retrieveFile(self, share_drive_path: str, file_path: str, file) -> (int, int):
         retrieved_file_content = TestConnection.files_to_retrieve.get((share_drive_path, file_path))
         if retrieved_file_content is not None:
             if os.path.isfile(retrieved_file_content):
@@ -37,9 +45,14 @@ class TestConnection:
             else:
                 file.write(str.encode(retrieved_file_content))
 
-    def listPath(self, service_name: str, path: str, pattern='*'):
-        files_list = [os.path.basename(file_path) for _, file_path in TestConnection.stored_files if
-                re.search(pattern, os.path.basename(file_path))]
+        return 0, 0
+
+    def listPath(self, service_name: str, path: str, pattern: str='*') -> List[SharedFile]:
+        files_list = [
+            SharedFileMock(os.path.basename(file_path))
+            for _, file_path in TestConnection.stored_files
+            if re.search(pattern, os.path.basename(file_path))
+        ]
         if not files_list:
             raise OperationFailure(None, None)
         return files_list
