@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 1.10.1 (2018-10-01) ##
+
+### Bug fixes ###
+
+- Add return types for Samba Mock functions.
+
 ## Version 1.10.0 (2018-09-24) ##
 
 ### Enhancements ###
