@@ -6,6 +6,9 @@ from collections import namedtuple
 from smb.smb_structs import OperationFailure
 from smb.base import SharedFile
 
+SharedFileMock = namedtuple('SharedFileMock', ['filename'])
+
+
 class TestConnection:
     """
     Mock a Samba Connection object.
@@ -45,11 +48,8 @@ class TestConnection:
         return 0, 0
 
     def listPath(self, service_name: str, path: str, pattern: str='*') -> List[SharedFile]:
-        def to_file(name):
-            SharedFileMock = namedtuple('SharedFileMock', ['filename'])
-            return SharedFileMock(name)
         files_list = [
-            to_file( os.path.basename(file_path))
+            SharedFileMock(os.path.basename(file_path))
             for _, file_path in TestConnection.stored_files
             if re.search(pattern, os.path.basename(file_path))
         ]
