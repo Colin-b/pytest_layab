@@ -6,11 +6,17 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 1.11.0 (2018-10-04) ##
+
+### Enhancements ###
+
+- Add ADAM Rest mock.
+
 ## Version 1.10.2 (2018-10-01) ##
 
 ### Bug fixes ###
 
-- Update dependencies to latest version
+- Update dependencies to latest version.
 
 ## Version 1.10.1 (2018-10-01) ##
 
@@ -100,7 +106,7 @@ List all changes in various categories:
 
 ### Bug fixes ###
 
-- Assert Swagger does not manage path without parameters
+- Assert Swagger does not manage path without parameters.
 
 ## Version 1.3.0 (2017-10-16) ##
 

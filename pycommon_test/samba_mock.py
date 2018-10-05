@@ -3,6 +3,7 @@ import re
 from typing import List
 from collections import namedtuple
 
+# pysmb is not listed as dependency as it is optional and already provided by client in code
 from smb.smb_structs import OperationFailure
 from smb.base import SharedFile
 
