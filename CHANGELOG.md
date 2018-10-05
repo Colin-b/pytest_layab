@@ -6,7 +6,13 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
-## Version 1.11.0 (2018-10-04) ##
+## Version 1.12.0 (2018-10-05) ##
+
+### Enhancements ###
+
+- Add replace_user_groups method to ADAM Rest mock.
+
+## Version 1.11.0 (2018-10-05) ##
 
 ### Enhancements ###
 

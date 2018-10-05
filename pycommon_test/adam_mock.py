@@ -16,3 +16,11 @@ class AdamMock:
             status=200,
             json=[{'memberOf': groups}]
         )
+
+    def replace_user_groups(self, user: str, *groups):
+        responses.replace(
+            url=f'{self.server_uri}/users/{user}',
+            method_or_response=responses.GET,
+            status=200,
+            json=[{'memberOf': groups}]
+        )
