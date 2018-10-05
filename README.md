@@ -1,6 +1,6 @@
 # Python Common Test Module #
 
-Provide helper to write test cases.
+Provide helper and mocks to ease test cases writing.
 
 ## Service testing ##
 

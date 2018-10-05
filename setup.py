@@ -11,4 +11,10 @@ setup(
         # Used to manage testing of Flask RestPlus components
         'flask-restplus==0.12.1',
     ],
+    extras_require={
+        'adam': [
+            # Used to mock ADAM Rest service
+            'responses==0.9.0',
+        ],
+    },
 )
