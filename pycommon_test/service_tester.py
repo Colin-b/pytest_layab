@@ -58,6 +58,26 @@ class JSONTestCase(TestCase):
         actual = json.loads(response.data.decode('utf-8'))
         self.assertRegex(f'{actual}', f'{expected}')
 
+    def assert_text(self, response, expected: str):
+        """
+        Assert that response is containing the following text.
+
+        :param response: Received query response.
+        :param expected: Expected text.
+        """
+        actual = response.data.decode('utf-8')
+        self.assertEqual(expected, actual)
+
+    def assert_text_regex(self, response, expected: str):
+        """
+        Assert that response is containing the following text.
+
+        :param response: Received query response.
+        :param expected: Expected text (with regex in values).
+        """
+        actual = response.data.decode('utf-8')
+        self.assertRegex(expected, actual)
+
     def assert_swagger(self, response, expected):
         """
         Assert that response is containing the following JSON.
