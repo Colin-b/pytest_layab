@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 1.13.0 (2018-10-15) ##
+
+### Enhancements ###
+
+- Add assert_text and assert_text_regex methods to JSONTestCase.
+
 ## Version 1.12.0 (2018-10-05) ##
 
 ### Enhancements ###

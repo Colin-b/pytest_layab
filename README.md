@@ -9,7 +9,7 @@ You can instantiate a service test case by extending pycommon_test.service_teste
 This test case:
  * Log start and end of test.
  * Provides overridable methods to fill and clear database between each test.
- * Provides various assertion methods.
+ * Provides various assertion methods (in addition to [http://flask.pocoo.org/docs/1.0/testing/]).
 
 ```python
 from pycommon_test.service_tester import JSONTestCase
@@ -67,13 +67,29 @@ from pycommon_test.service_tester import JSONTestCase
 class ServerTest(JSONTestCase):
     def test_json_exact_content(self):
         response = None
-        self.assert_json(response, {'expected_key': 'Expected value'})
+        self.assert_json(response, {'expected_key': 'Expected 13 value'})
 
     def test_json_with_regular_expression(self):
         response = None
-        self.assert_json_regex(response, {'expected_key': 'Expected value'})
+        self.assert_json_regex(response, {'expected_key': 'Expected \d\d value'})
 
     def test_open_api_definition(self):
         response = None
         self.assert_swagger(response, {'expected_swagger_key': 'Expected swagger value'})
+```
+
+### Checking Text ###
+
+```python
+from pycommon_test.service_tester import JSONTestCase
+
+
+class ServerTest(JSONTestCase):
+    def test_text_exact_content(self):
+        response = None
+        self.assert_text(response, 'Expected 13 value')
+
+    def test_text_with_regular_expression(self):
+        response = None
+        self.assert_text_regex(response, 'Expected \d\d value')
 ```
