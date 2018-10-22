@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 1.15.0 (2018-10-22) ##
+
+### Enhancements ###
+
+- Allow to assert data sent by service to another API (form only for now).
+
 ## Version 1.14.0 (2018-10-15) ##
 
 ### Enhancements ###

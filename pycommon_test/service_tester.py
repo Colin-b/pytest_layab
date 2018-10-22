@@ -2,6 +2,7 @@ import os
 import json
 import logging
 from flask_testing import TestCase
+from typing import Dict, List
 
 os.environ['SERVER_ENVIRONMENT'] = 'test'  # Ensure that test configuration will be loaded
 logger = logging.getLogger(__name__)
@@ -78,6 +79,14 @@ class JSONTestCase(TestCase):
         actual = response.data.decode('utf-8')
         self.assertRegex(expected, actual)
 
+    def assert_received_form(self, url: str, expected_form: Dict[str, List[str]]):
+        actual_request = _get_request(url)
+        if not actual_request:
+            self.fail(f'{url} was never called.')
+
+        actual_form = _to_form(actual_request.body.decode())
+        return self.assertEqual(actual_form, expected_form)
+
     def assert_swagger(self, response, expected):
         """
         Assert that response is containing the following JSON.
@@ -135,3 +144,29 @@ class JSONTestCase(TestCase):
         :return: Received response.
         """
         return self.client.put(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
+
+
+def _to_form(body: str) -> Dict[str, List[str]]:
+    """Convert a form string to a dictionary."""
+    parts = body.split('\r\n')
+    index = 0
+    form_data = {}
+    while index < len(parts):
+        if parts[index].startswith('Content-Disposition: form-data; name='):
+            name = parts[index][38:].split('"')[0]
+            index += 2
+            form_data.setdefault(name, []).append(parts[index])
+            continue
+        index += 1
+    return form_data
+
+
+def _get_request(url: str):
+    try:
+        import responses
+    except ImportError:
+        raise Exception('responses python module is required.')
+
+    for call in responses.calls:
+        if call.request.url == url:
+            return call.request
