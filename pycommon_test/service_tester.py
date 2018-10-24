@@ -2,7 +2,7 @@ import os
 import json
 import logging
 from flask_testing import TestCase
-from typing import Dict, List
+from typing import Dict, List, Union
 
 os.environ['SERVER_ENVIRONMENT'] = 'test'  # Ensure that test configuration will be loaded
 logger = logging.getLogger(__name__)
@@ -43,7 +43,7 @@ class JSONTestCase(TestCase):
         :param response: Received query response.
         :param expected: Expected python structure corresponding to the JSON.
         """
-        actual = json.loads(response.data.decode('utf-8'))
+        actual = _to_json(response.data)
         if isinstance(actual, list):  # List order does not matter in JSON
             self.assertCountEqual(expected, actual)
         else:
@@ -56,7 +56,7 @@ class JSONTestCase(TestCase):
         :param response: Received query response.
         :param expected: Expected python structure corresponding to the JSON (with regex in values).
         """
-        actual = json.loads(response.data.decode('utf-8'))
+        actual = _to_json(response.data)
         self.assertRegex(f'{actual}', f'{expected}')
 
     def assert_text(self, response, expected: str):
@@ -66,8 +66,7 @@ class JSONTestCase(TestCase):
         :param response: Received query response.
         :param expected: Expected text.
         """
-        actual = response.data.decode('utf-8')
-        self.assertEqual(expected, actual)
+        self.assertEqual(expected, _to_text(response.data))
 
     def assert_text_regex(self, response, expected: str):
         """
@@ -76,16 +75,36 @@ class JSONTestCase(TestCase):
         :param response: Received query response.
         :param expected: Expected text (with regex in values).
         """
-        actual = response.data.decode('utf-8')
-        self.assertRegex(expected, actual)
+        self.assertRegex(expected, _to_text(response.data))
 
-    def assert_received_form(self, url: str, expected_form: Dict[str, List[str]]):
+    def received_form(self, url: str) -> Dict[str, Union[bytes, str, List[Union[bytes, str]]]]:
+        return _to_form(self.received_bytes(url))
+
+    def received_json(self, url: str):
+        return _to_json(self.received_bytes(url))
+
+    def received_text(self, url: str):
+        return _to_text(self.received_bytes(url))
+
+    def received_bytes(self, url: str) -> bytes:
         actual_request = _get_request(url)
         if not actual_request:
             self.fail(f'{url} was never called.')
 
-        actual_form = _to_form(actual_request.body.decode())
-        return self.assertEqual(actual_form, expected_form)
+        return actual_request.body
+
+    def assert_received_form(self, url: str, expected_form: Dict[str, Union[bytes, str, List[Union[bytes, str]]]]):
+        return self.assertEqual(expected_form, self.received_form(url))
+
+    def assert_received_json(self, url: str, expected):
+        actual = self.received_json(url)
+        if isinstance(actual, list):  # List order does not matter in JSON
+            self.assertCountEqual(expected, actual)
+        else:
+            self.assertEqual(expected, actual)
+
+    def assert_received_text(self, url: str, expected: str):
+        return self.assertEqual(expected, self.received_text(url))
 
     def assert_swagger(self, response, expected):
         """
@@ -94,7 +113,7 @@ class JSONTestCase(TestCase):
         :param response: Received query response.
         :param expected: Expected python structure corresponding to the JSON.
         """
-        actual = json.loads(response.data.decode('utf-8'))
+        actual = _to_json(response.data)
         actual_paths = actual['paths'] or {}
         actual['paths'] = None
         expected_paths = expected.get('paths', {})
@@ -146,19 +165,35 @@ class JSONTestCase(TestCase):
         return self.client.put(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
 
 
-def _to_form(body: str) -> Dict[str, List[str]]:
+def _to_form(body: bytes) -> Dict[str, Union[bytes, str, List[Union[bytes, str]]]]:
     """Convert a form string to a dictionary."""
-    parts = body.split('\r\n')
+    parts = body.split(b'\r\n')
     index = 0
     form_data = {}
     while index < len(parts):
-        if parts[index].startswith('Content-Disposition: form-data; name='):
-            name = parts[index][38:].split('"')[0]
+        if parts[index].startswith(b'Content-Disposition: form-data; name='):
+            name = _to_text(parts[index][38:].split(b'"')[0])
             index += 2
-            form_data.setdefault(name, []).append(parts[index])
+            value = parts[index]
+            try:
+                value = _to_text(value)
+            except UnicodeDecodeError:
+                pass  # Keep value as bytes if it is not a string value
+            form_data.setdefault(name, []).append(value)
             continue
         index += 1
-    return form_data
+    return {
+        name: value if len(value) > 1 else value[0]
+        for name, value in form_data.items()
+    }
+
+
+def _to_text(body: bytes) -> str:
+    return body.decode('utf-8')
+
+
+def _to_json(body: bytes):
+    return json.loads(_to_text(body))
 
 
 def _get_request(url: str):
