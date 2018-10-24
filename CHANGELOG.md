@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 1.15.1 (2018-10-24) ##
+
+### Bug fixes ###
+
+- Handle form containing bytes.
+
 ## Version 1.15.0 (2018-10-22) ##
 
 ### Enhancements ###
