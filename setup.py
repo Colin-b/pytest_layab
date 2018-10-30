@@ -14,7 +14,7 @@ setup(
     extras_require={
         'adam': [
             # Used to mock ADAM Rest service
-            'responses==0.9.0',
+            'responses==0.10.2',
         ],
     },
 )

@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 1.15.2 (2018-10-30) ##
+
+### Bug fixes ###
+
+- Update responses to latest version.
+
 ## Version 1.15.1 (2018-10-24) ##
 
 ### Bug fixes ###
