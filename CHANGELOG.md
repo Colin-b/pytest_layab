@@ -6,12 +6,21 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 2.1.0 (2018-11-16) ##
+
+### Enhancements ###
+
+- Nose and Coverage are now part of dependencies.
+
 ## Version 2.0.0 (2018-11-16) ##
+
+### Release notes ###
+
+- Adam optional dependency which only contained Responses has been removed.
 
 ### Enhancements ###
 
 - Responses is now a default dependency since it is commonly used for integration testing of API.
-- Adam optionnal dependency which only contained Responses has been removed.
 
 ## Version 1.15.2 (2018-10-30) ##
 
