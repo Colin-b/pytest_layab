@@ -13,5 +13,9 @@ setup(
         'flask-restplus==0.12.1',
         # Used to mock API responses
         'responses==0.10.4',
+        # Used to run tests
+        'nose==1.3.7',
+        # Used to check code coverage
+        'coverage==4.5.2',
     ],
 )
