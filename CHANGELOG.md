@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 2.0.0 (2018-11-16) ##
+
+### Enhancements ###
+
+- Responses is now a default dependency since it is commonly used for integration testing of API.
+
 ## Version 1.15.2 (2018-10-30) ##
 
 ### Bug fixes ###
