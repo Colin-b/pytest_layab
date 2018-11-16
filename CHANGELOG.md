@@ -11,6 +11,7 @@ List all changes in various categories:
 ### Enhancements ###
 
 - Responses is now a default dependency since it is commonly used for integration testing of API.
+- Adam optionnal dependency which only contained Responses has been removed.
 
 ## Version 1.15.2 (2018-10-30) ##
 
