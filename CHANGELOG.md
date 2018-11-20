@@ -6,7 +6,7 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
-## Version 2.1.0 (2018-11-21) ##
+## Version 2.1.1 (2018-11-21) ##
 
 ### Bug fixes ###
 
