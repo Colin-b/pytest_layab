@@ -45,8 +45,8 @@ class TestConnection:
                 file.write(open(retrieved_file_content, mode='rb').read())
             else:
                 file.write(str.encode(retrieved_file_content))
-
-        return 0, 0
+            return 0, 0
+        raise OperationFailure(None, None)
 
     def listPath(self, service_name: str, path: str, pattern: str='*') -> List[SharedFile]:
         files_list = [

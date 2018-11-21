@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 2.1.2 (2018-11-21) ##
+
+### Bug fixes ###
+
+- [Samba mock] Raise OperationFailure if no file was provided and retrieveFile is called.
+
 ## Version 2.1.1 (2018-11-21) ##
 
 ### Bug fixes ###
