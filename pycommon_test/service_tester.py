@@ -204,4 +204,5 @@ def _get_request(url: str):
 
     for call in responses.calls:
         if call.request.url == url:
+            responses.calls._calls.remove(call)  # Pop out verified request (to be able to check multiple requests)
             return call.request
