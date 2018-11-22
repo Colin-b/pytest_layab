@@ -1,10 +1,8 @@
 from setuptools import setup, find_packages
 
-from pycommon_test._version import __version__
-
 setup(
     name='pycommon_test',
-    version=__version__,
+    version=open("pycommon_test/_version.py").readlines()[-1].split()[-1].strip("\"'"),
     packages=find_packages(),
     install_requires=[
         # Used to manage testing of a Flask application

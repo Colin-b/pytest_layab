@@ -6,6 +6,17 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 3.0.0 (2018-11-22) ##
+
+### Release notes ###
+
+- [ADAM mock] Remove add and replace methods by a single one: set.
+
+### Enhancements ###
+
+- [ADAM mock] Add mock_user_groups function.
+- [ADAM mock] Add AdamMock class and mock_user_groups functions to __init__.
+
 ## Version 2.1.2 (2018-11-21) ##
 
 ### Bug fixes ###
