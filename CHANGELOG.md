@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 3.0.1 (2018-11-23) ##
+
+### Bug fixes ###
+
+- [ADAM mock] Use the default responses mock.
+
 ## Version 3.0.0 (2018-11-22) ##
 
 ### Release notes ###
