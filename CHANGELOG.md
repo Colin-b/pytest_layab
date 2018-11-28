@@ -6,6 +6,14 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 3.0.2 (2018-11-28) ##
+
+### Bug fixes ###
+
+- [datetime mock] Mock datetime.datetime.utcnow().
+- [datetime mock] Allow to revert to python datetime.datetime module.
+- [datetime mock] Allow to provide micro seconds.
+
 ## Version 3.0.1 (2018-11-22) ##
 
 ### Bug fixes ###
