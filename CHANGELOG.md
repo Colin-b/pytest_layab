@@ -14,7 +14,7 @@ List all changes in various categories:
 - [datetime mock] Allow to revert to python datetime.datetime module.
 - [datetime mock] Allow to provide micro seconds.
 
-## Version 3.0.1 (2018-11-22) ##
+## Version 3.0.1 (2018-11-23) ##
 
 ### Bug fixes ###
 
