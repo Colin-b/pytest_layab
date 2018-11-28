@@ -6,6 +6,11 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 3.1.0 (2018-11-29) ##
+
+### Enhancements ###
+- Add celery mock.
+
 ## Version 3.0.2 (2018-11-28) ##
 
 ### Bug fixes ###
