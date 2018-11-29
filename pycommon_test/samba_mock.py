@@ -40,14 +40,14 @@ class TestConnection:
         TestConnection.stored_files[(share_drive_path, new_file_path)] = TestConnection.stored_files.pop((share_drive_path, initial_file_path), None)
 
     def retrieveFile(self, share_drive_path: str, file_path: str, file) -> (int, int):
-        retrieved_file_content = TestConnection.files_to_retrieve.get((share_drive_path, file_path))
+        retrieved_file_content = TestConnection.files_to_retrieve.pop((share_drive_path, file_path), None)
         if retrieved_file_content is not None:
             if os.path.isfile(retrieved_file_content):
                 file.write(open(retrieved_file_content, mode='rb').read())
             else:
                 file.write(str.encode(retrieved_file_content))
             return 0, 0
-        raise OperationFailure(None, None)
+        raise OperationFailure('Mock for retrieveFile failure.', [])
 
     def listPath(self, service_name: str, path: str, pattern: str='*') -> List[SharedFile]:
         files_list = [
@@ -56,13 +56,13 @@ class TestConnection:
             if re.search(pattern, os.path.basename(file_path))
         ]
         if not files_list:
-            raise OperationFailure(None, None)
+            raise OperationFailure('Mock for listPath failure.', [])
         return files_list
 
     def echo(self, data, timeout: int=10):
         echo_response = TestConnection.echo_responses.pop(data, None)
         if echo_response is None:
-            raise OperationFailure(None, None)
+            raise OperationFailure('Mock for echo failure.', [])
         return echo_response
 
     @classmethod
