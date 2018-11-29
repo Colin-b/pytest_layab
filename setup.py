@@ -15,11 +15,5 @@ setup(
         'nose==1.3.7',
         # Used to check code coverage
         'coverage==4.5.2',
-    ],
-    extras_require={
-        # Async task execution using celery
-        'celery': [
-            'celery==4.2.1',
-        ],
-    },
+    ]
 )
