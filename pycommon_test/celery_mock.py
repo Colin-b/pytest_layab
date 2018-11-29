@@ -9,7 +9,7 @@ from celery.result import EagerResult
 logger = logging.getLogger('celery_mock')
 
 
-def AsyncResultStub(task_id, **kargs):
+def async_result_stub(task_id, **kargs):
     return TaskResultStore.get_by_id(task_id)
 
 
@@ -19,7 +19,7 @@ def AsyncResultStub(task_id, **kargs):
 ## With this line of code, any new AsyncResult for a given task id, will return an EagerResult where we can actually fetch the result
 ## stored in AsyncTaskProxy
 import pycommon_server.celery_common
-pycommon_server.celery_common.celery_results.AsyncResult = AsyncResultStub
+pycommon_server.celery_common.celery_results.AsyncResult = async_result_stub
 
 
 class TaskResultStore:
