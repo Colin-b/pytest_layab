@@ -10,6 +10,7 @@ List all changes in various categories:
 ## Version 3.2.0 (2018-11-29) ##
 
 ### Enhancements ###
+
 - Add celery mock.
 
 ## Version 3.1.0 (2018-11-29) ##
