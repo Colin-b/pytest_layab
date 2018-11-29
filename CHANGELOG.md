@@ -6,10 +6,21 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
-## Version 3.1.0 (2018-11-29) ##
+
+## Version 3.2.0 (2018-11-29) ##
 
 ### Enhancements ###
 - Add celery mock.
+
+## Version 3.1.0 (2018-11-29) ##
+
+### Enhancements ###
+
+- [Samba mock] Mock echo.
+
+### Bug fixes ###
+
+- [Samba mock] Ensure every expected call was performed on reset.
 
 ## Version 3.0.2 (2018-11-28) ##
 
