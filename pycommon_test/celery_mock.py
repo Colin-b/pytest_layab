@@ -13,6 +13,11 @@ def AsyncResultStub(task_id, **kargs):
     return TaskResultStore.get_by_id(task_id)
 
 
+
+## when you use celery in eager mode, when you call apply_async it returns an EagerResult (instead of AsyncResult).
+## In pycommon_server, we use AsyncResult. you cannot get an EagerResult from an AsyncResult.
+## With this line of code, any new AsyncResult for a given task id, will return an EagerResult where we can actually fetch the result
+## stored in AsyncTaskProxy
 import pycommon_server.celery_common
 pycommon_server.celery_common.celery_results.AsyncResult = AsyncResultStub
 
