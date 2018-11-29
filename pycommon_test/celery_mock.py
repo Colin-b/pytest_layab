@@ -27,6 +27,7 @@ class EagerResultWithStateSupport(EagerResult):
     def ready(self):
         return self._state == states.READY_STATES
 
+
 class TaskResultStore:
 
     __task_store = {}
