@@ -10,41 +10,24 @@ logger = logging.getLogger('celery_mock')
 
 
 def AsyncResultStub(task_id, **kargs):
-    return TaskResultStore().get_by_id(task_id)
+    return TaskResultStore.get_by_id(task_id)
 
 
-## setup asyncresultstub
-try:
-    import pycommon_server.celery_common
-    pycommon_server.celery_common.celery_results.AsyncResult = AsyncResultStub
-    logger.info("AsyncResultStub installed")
-except ImportError:
-    logger.error("Fail to install AsyncResultStub")
+import pycommon_server.celery_common
+pycommon_server.celery_common.celery_results.AsyncResult = AsyncResultStub
 
 
-class Singleton(type):
-    """
-    Singleton pattern implementation based on metaclass
-    Example:
-        class MySingleton(metaclass=Singleton):
-            pass
-    """
-    _instances = {}
+class TaskResultStore:
 
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
-        return cls._instances[cls]
-
-
-class TaskResultStore(metaclass=Singleton):
     __task_store = {}
 
-    def put(self, result):
-        self.__task_store[result.id] = result
+    @classmethod
+    def put(cls, result):
+        cls.__task_store[result.id] = result
 
-    def get_by_id(self, id):
-        return self.__task_store[id]
+    @classmethod
+    def get_by_id(cls, id):
+        return cls.__task_store[id]
 
 
 class TestCeleryAppProxy:
@@ -72,7 +55,7 @@ class TestCeleryAppProxy:
                         method_result = self.method(*aa, **oo)
                         task_id = str(uuid.uuid4())
                         celery_result = EagerResult(task_id, method_result, states.SUCCESS)
-                        TaskResultStore().put(celery_result)
+                        TaskResultStore.put(celery_result)
                         return celery_result
 
                 return AsyncTaskProxy
