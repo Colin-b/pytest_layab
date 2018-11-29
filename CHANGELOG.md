@@ -13,6 +13,13 @@ List all changes in various categories:
 
 - Add celery mock.
 
+## Version 3.1.1 (2018-11-29) ##
+
+### Bug fixes ###
+
+- [Samba mock] Allow OperationFailure to be represented as str.
+- [Samba mock] pop retrievedFiles.
+
 ## Version 3.1.0 (2018-11-29) ##
 
 ### Enhancements ###
