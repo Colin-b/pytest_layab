@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 3.1.1 (2018-11-29) ##
+
+### Bug fixes ###
+
+- [Samba mock] Allow OperationFailure to be represented as str.
+
 ## Version 3.1.0 (2018-11-29) ##
 
 ### Enhancements ###
