@@ -8,8 +8,10 @@ from celery.result import EagerResult
 
 logger = logging.getLogger('celery_mock')
 
+
 def AsyncResultStub(task_id, **kargs):
     return TaskResultStore().get_by_id(task_id)
+
 
 ## setup asyncresultstub
 try:
@@ -47,19 +49,20 @@ class TaskResultStore(metaclass=Singleton):
 
 class TestCeleryAppProxy:
     """
-    Flask rest-plus Namespace proxy.
-    This proxy namespace add a decorator 'async_route' that will generate 2 extra endpoint : /status and /result
-    to query the status or the result of the celery task
+    Celery App proxy. This proxy configures celery app in "task always eager" mode.
+    This proxy intercepts task decorator so apply_async is working in this mode.
     """
 
     def __init__(self, celery_app):
-        self.celery_app = celery_app
+        self.__celery_app = celery_app
+        self.__celery_app.conf.update(task_always_eager=True, result_backend='cache', cache_backend='memory',
+                                       task_eager_propagates=True)
         self.__task_store = {}
 
     def __getattr__(self, name):
         if name == 'task':
             def task_interceptor(*args, **opts):
-                result = getattr(self.celery_app, 'task')(*args, **opts)
+                result = getattr(self.__celery_app, 'task')(*args, **opts)
 
                 class AsyncTaskProxy:
                     def __init__(self, *a, **o):
@@ -76,4 +79,4 @@ class TestCeleryAppProxy:
 
             return task_interceptor
         else:
-            return getattr(self.celery_app, name)
+            return getattr(self.__celery_app, name)
