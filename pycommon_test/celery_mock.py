@@ -22,6 +22,11 @@ import pycommon_server.celery_common
 pycommon_server.celery_common.celery_results.AsyncResult = async_result_stub
 
 
+class EagerResultWithStateSupport(EagerResult):
+
+    def ready(self):
+        return self._state == states.READY_STATES
+
 class TaskResultStore:
 
     __task_store = {}
@@ -32,7 +37,7 @@ class TaskResultStore:
 
     @classmethod
     def get_by_id(cls, id):
-        return cls.__task_store[id] if id in cls.__task_store else EagerResult(id, None, states.PENDING )
+        return cls.__task_store[id] if id in cls.__task_store else EagerResultWithStateSupport(id, None, states.PENDING )
 
 
 class TestCeleryAppProxy:
