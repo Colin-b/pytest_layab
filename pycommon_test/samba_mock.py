@@ -18,6 +18,7 @@ class TestConnection:
     should_connect = True
     stored_files = {}
     files_to_retrieve = {}
+    echo_responses = {}
 
     def __init__(self, user_name, password, test_name, machine_name, *args, **kwargs):
         self.remote_name = machine_name
@@ -58,11 +59,24 @@ class TestConnection:
             raise OperationFailure(None, None)
         return files_list
 
+    def echo(self, data, timeout: int=10):
+        echo_response = TestConnection.echo_responses.pop(data, None)
+        if echo_response is None:
+            raise OperationFailure(None, None)
+        return echo_response
+
     @classmethod
     def reset(cls):
         cls.should_connect = True
         cls.stored_files.clear()
-        cls.files_to_retrieve.clear()
+        if cls.files_to_retrieve:
+            files = dict(cls.files_to_retrieve)
+            cls.files_to_retrieve.clear()
+            raise Exception(f'Expected files were not retrieved: {files}')
+        if cls.echo_responses:
+            echos = dict(cls.echo_responses)
+            cls.echo_responses.clear()
+            raise Exception(f'Echo were not requested: {echos}')
 
 
 import smb.SMBConnection
