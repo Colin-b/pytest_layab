@@ -40,7 +40,7 @@ class TestConnection:
         TestConnection.stored_files[(share_drive_path, new_file_path)] = TestConnection.stored_files.pop((share_drive_path, initial_file_path), None)
 
     def retrieveFile(self, share_drive_path: str, file_path: str, file) -> (int, int):
-        retrieved_file_content = TestConnection.files_to_retrieve.get((share_drive_path, file_path))
+        retrieved_file_content = TestConnection.files_to_retrieve.pop((share_drive_path, file_path), None)
         if retrieved_file_content is not None:
             if os.path.isfile(retrieved_file_content):
                 file.write(open(retrieved_file_content, mode='rb').read())
