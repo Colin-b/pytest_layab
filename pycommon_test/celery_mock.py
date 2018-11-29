@@ -32,7 +32,7 @@ class TaskResultStore:
 
     @classmethod
     def get_by_id(cls, id):
-        return cls.__task_store[id]
+        return cls.__task_store[id] if id in cls.__task_store else EagerResult(id, None, states.PENDING )
 
 
 class TestCeleryAppProxy:
