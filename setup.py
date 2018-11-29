@@ -15,5 +15,5 @@ setup(
         'nose==1.3.7',
         # Used to check code coverage
         'coverage==4.5.2',
-    ],
+    ]
 )
