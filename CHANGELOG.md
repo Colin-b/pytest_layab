@@ -11,6 +11,7 @@ List all changes in various categories:
 ### Enhancements ###
 
 - Add a assert_303_regex method to check location, response status and return relative url at once.
+- Add a get_async test method.
 
 ## Version 3.3.0 (2018-11-30) ##
 

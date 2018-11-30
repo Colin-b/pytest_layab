@@ -168,6 +168,13 @@ class JSONTestCase(TestCase):
         """
         return self.client.post(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
 
+    def get_async(self, url, *args, **kwargs):
+        response = self.client.get(url, *args, **kwargs)
+        status_url = self.assert_202_regex(response, '.*')
+        status_reply = self.client.get(status_url)
+        result_url = self.assert_303_regex(status_reply, '.*')
+        return self.client.get(result_url)
+
     def put_json(self, url, json_body, **kwargs):
         """
         Send a PUT request to this URL.
