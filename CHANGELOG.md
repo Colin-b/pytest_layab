@@ -6,11 +6,16 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
-## Version 3.2.1 (2018-11-30) ##
+## Version 3.3.0 (2018-11-30) ##
+
+### Enhancements ###
+
+- Add a assert_201 method to check location and response status at once.
 
 ### Bug fixes ###
 
-- Use the exact same method signature from Celery in AsyncTaskProxy#apply_async
+- Use the exact same method signature from Celery in AsyncTaskProxy#apply_async.
+- assert_text_regex is now working properly.
 
 ## Version 3.2.0 (2018-11-29) ##
 
