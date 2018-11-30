@@ -45,6 +45,11 @@ class JSONTestCase(TestCase):
         self.assertRegex(response.headers['location'], expected_location_regex)
         return response.headers['location'].replace('http://localhost', '')
 
+    def assert_303_regex(self, response, expected_location_regex: str) -> str:
+        self.assertStatus(response, 303)
+        self.assertRegex(response.location, expected_location_regex)
+        return response.location.replace('http://localhost', '')
+
     def assert_json(self, response, expected):
         """
         Assert that response is containing the following JSON.
@@ -162,6 +167,13 @@ class JSONTestCase(TestCase):
         :return: Received response.
         """
         return self.client.post(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
+
+    def get_async(self, url, *args, **kwargs):
+        response = self.client.get(url, *args, **kwargs)
+        status_url = self.assert_202_regex(response, '.*')
+        status_reply = self.client.get(status_url)
+        result_url = self.assert_303_regex(status_reply, '.*')
+        return self.client.get(result_url)
 
     def put_json(self, url, json_body, **kwargs):
         """
