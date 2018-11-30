@@ -41,7 +41,7 @@ class JSONTestCase(TestCase):
         self.assertEqual(expected_location, response.headers['location'])
 
     def assert_202_regex(self, response, expected_location_regex: str) -> str:
-        self.assertStatus(response, 201)
+        self.assertStatus(response, 202)
         self.assertRegex(response.headers['location'], expected_location_regex)
         return response.headers['location'].replace('http://localhost', '')
 
