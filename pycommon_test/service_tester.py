@@ -45,6 +45,10 @@ class JSONTestCase(TestCase):
         self.assertRegex(response.headers['location'], expected_location_regex)
         return response.headers['location'].replace('http://localhost', '')
 
+    def assert_204(self, response) -> None:
+        self.assertStatus(response, 204)
+        self.assert_text(response, '')
+
     def assert_303_regex(self, response, expected_location_regex: str) -> str:
         self.assertStatus(response, 303)
         self.assertRegex(response.location, expected_location_regex)
