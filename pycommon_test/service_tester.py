@@ -45,6 +45,11 @@ class JSONTestCase(TestCase):
         self.assertRegex(response.headers['location'], expected_location_regex)
         return response.headers['location'].replace('http://localhost', '')
 
+    def assert_303_regex(self, response, expected_location_regex: str) -> str:
+        self.assertStatus(response, 303)
+        self.assertRegex(response.location, expected_location_regex)
+        return response.location.replace('http://localhost', '')
+
     def assert_json(self, response, expected):
         """
         Assert that response is containing the following JSON.
