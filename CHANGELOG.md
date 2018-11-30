@@ -11,6 +11,7 @@ List all changes in various categories:
 ### Enhancements ###
 
 - Add a assert_201 method to check location and response status at once.
+- Add a assert_202_regex method to check location, response status and return relative url at once.
 
 ### Bug fixes ###
 

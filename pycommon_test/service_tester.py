@@ -36,9 +36,14 @@ class JSONTestCase(TestCase):
         logger.info(f'End of {self._testMethodName}')
         logger.info(f'-------------------------------')
 
-    def assert_201(self, response, expected_location):
+    def assert_201(self, response, expected_location: str) -> None:
         self.assertStatus(response, 201)
         self.assertEqual(expected_location, response.headers['location'])
+
+    def assert_202_regex(self, response, expected_location_regex: str) -> str:
+        self.assertStatus(response, 201)
+        self.assertRegex(response.headers['location'], expected_location_regex)
+        return response.headers['location'].replace('http://localhost', '')
 
     def assert_json(self, response, expected):
         """
