@@ -64,7 +64,7 @@ class TestCeleryAppProxy:
 
                     def apply_async(self, args=None, kwargs=None, task_id=None, producer=None,
                                     link=None, link_error=None, shadow=None, **options):
-                        method_result = self.__method(args, kwargs)
+                        method_result = self.__method(*args)
                         task_id = task_id if task_id else str(uuid.uuid4())
                         celery_result = EagerResult(task_id, method_result, states.SUCCESS)
                         TaskResultStore.put(celery_result)
