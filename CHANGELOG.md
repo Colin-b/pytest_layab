@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 3.5.0 (2018-11-30) ##
+
+### Enhancements ###
+
+- Add an assert_204 method ensuring that body is empty as well.
+
 ## Version 3.4.1 (2018-11-30) ##
 
 ### Bug fixes ###
@@ -16,15 +22,15 @@ List all changes in various categories:
 
 ### Enhancements ###
 
-- Add a assert_303_regex method to check location, response status and return relative url at once.
+- Add an assert_303_regex method to check location, response status and return relative url at once.
 - Add a get_async test method.
 
 ## Version 3.3.0 (2018-11-30) ##
 
 ### Enhancements ###
 
-- Add a assert_201 method to check location and response status at once.
-- Add a assert_202_regex method to check location, response status and return relative url at once.
+- Add an assert_201 method to check location and response status at once.
+- Add an assert_202_regex method to check location, response status and return relative url at once.
 
 ### Bug fixes ###
 
