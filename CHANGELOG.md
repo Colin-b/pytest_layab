@@ -6,6 +6,11 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 3.2.1 (2018-11-30) ##
+
+### Bug fixes ###
+
+- Use the exact same method signature from Celery in AsyncTaskProxy#apply_async
 
 ## Version 3.2.0 (2018-11-29) ##
 

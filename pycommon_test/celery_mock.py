@@ -55,16 +55,17 @@ class TestCeleryAppProxy:
 
     def __getattr__(self, name):
         if name == 'task':
-            def task_interceptor(*args, **opts):
-                result = getattr(self.__celery_app, 'task')(*args, **opts)
+            def task_interceptor(*aa, **oo):
+                result = getattr(self.__celery_app, 'task')(*aa, **oo)
 
                 class AsyncTaskProxy:
                     def __init__(self, method, *a, **o):
                         self.__method = method
 
-                    def apply_async(self, *aa, **oo):
-                        method_result = self.__method(*aa, **oo)
-                        task_id = str(uuid.uuid4())
+                    def apply_async(self, args=None, kwargs=None, task_id=None, producer=None,
+                                    link=None, link_error=None, shadow=None, **options):
+                        method_result = self.__method(args, kwargs)
+                        task_id = task_id if task_id else str(uuid.uuid4())
                         celery_result = EagerResult(task_id, method_result, states.SUCCESS)
                         TaskResultStore.put(celery_result)
                         return celery_result
