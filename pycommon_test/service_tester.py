@@ -36,6 +36,15 @@ class JSONTestCase(TestCase):
         logger.info(f'End of {self._testMethodName}')
         logger.info(f'-------------------------------')
 
+    def assert_201(self, response, expected_location: str) -> None:
+        self.assertStatus(response, 201)
+        self.assertEqual(expected_location, response.headers['location'])
+
+    def assert_202_regex(self, response, expected_location_regex: str) -> str:
+        self.assertStatus(response, 201)
+        self.assertRegex(response.headers['location'], expected_location_regex)
+        return response.headers['location'].replace('http://localhost', '')
+
     def assert_json(self, response, expected):
         """
         Assert that response is containing the following JSON.
@@ -75,7 +84,7 @@ class JSONTestCase(TestCase):
         :param response: Received query response.
         :param expected: Expected text (with regex in values).
         """
-        self.assertRegex(expected, _to_text(response.data))
+        self.assertRegex(_to_text(response.data), expected)
 
     def received_form(self, url: str) -> Dict[str, Union[bytes, str, List[Union[bytes, str]]]]:
         return _to_form(self.received_bytes(url))
