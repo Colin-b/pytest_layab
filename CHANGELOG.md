@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 3.4.1 (2018-11-30) ##
+
+### Bug fixes ###
+
+- assert_202 was expecting 201.
+
 ## Version 3.4.0 (2018-11-30) ##
 
 ### Enhancements ###
