@@ -36,23 +36,56 @@ class JSONTestCase(TestCase):
         logger.info(f'End of {self._testMethodName}')
         logger.info(f'-------------------------------')
 
-    def assert_201(self, response, expected_location: str) -> None:
+    def assert_201(self, response, expected_location: str) -> str:
+        """
+        Assert that status code is 201.
+        201 stands for Created, meaning that location header is expected as well.
+        Assert that location header is containing the expected location (hostname trimmed for tests)
+
+        :param expected_location: Expected location starting from server root (eg: /xxx)
+        :return Location from server root.
+        """
         self.assertStatus(response, 201)
-        self.assertEqual(expected_location, response.headers['location'])
+        actual_location = response.headers['location'].replace('http://localhost', '')
+        self.assertEqual(expected_location, actual_location)
+        return actual_location
 
     def assert_202_regex(self, response, expected_location_regex: str) -> str:
+        """
+        Assert that status code is 202.
+        202 stands for Accepted, meaning that location header is expected as well.
+        Assert that location header is containing the expected location (hostname trimmed for tests)
+
+        :param expected_location_regex: Expected location starting from server root (eg: /xxx). Can be a regular exp.
+        :return Location from server root.
+        """
         self.assertStatus(response, 202)
-        self.assertRegex(response.headers['location'], expected_location_regex)
-        return response.headers['location'].replace('http://localhost', '')
+        actual_location = response.headers['location'].replace('http://localhost', '')
+        self.assertRegex(actual_location, expected_location_regex)
+        return actual_location
 
     def assert_204(self, response) -> None:
+        """
+        Assert that status code is 204.
+        204 stands for No Content, meaning that body should be empty.
+        Assert that body is empty.
+        """
         self.assertStatus(response, 204)
         self.assert_text(response, '')
 
     def assert_303_regex(self, response, expected_location_regex: str) -> str:
+        """
+        Assert that status code is 303.
+        303 stands for See Other, meaning that location header is expected as well.
+        Assert that location header is containing the expected location (hostname trimmed for tests)
+
+        :param expected_location_regex: Expected location starting from server root (eg: /xxx). Can be a regular exp.
+        :return Location from server root.
+        """
         self.assertStatus(response, 303)
-        self.assertRegex(response.location, expected_location_regex)
-        return response.location.replace('http://localhost', '')
+        actual_location = response.location.replace('http://localhost', '')
+        self.assertRegex(actual_location, expected_location_regex)
+        return actual_location
 
     def assert_json(self, response, expected):
         """
