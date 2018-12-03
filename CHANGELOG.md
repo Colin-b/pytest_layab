@@ -6,6 +6,16 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 4.0.0 (2018-12-03) ##
+
+### Release notes ###
+
+- assert_201, assert_202 and assert_303 methods now expects location without http://localhost prefix.
+
+### Enhancements ###
+
+- assert_201 now return the location as well.
+
 ## Version 3.5.0 (2018-11-30) ##
 
 ### Enhancements ###
