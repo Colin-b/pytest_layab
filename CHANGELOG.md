@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 4.1.0 (2018-12-04) ##
+
+### Enhancements ###
+
+- [ADAM mock] Allow to mock health failure and success.
+
 ## Version 4.0.0 (2018-12-03) ##
 
 ### Release notes ###
