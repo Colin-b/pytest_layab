@@ -40,6 +40,52 @@ class AdamMock:
 
         return self
 
+    def health_should_fail(self) -> 'AdamMock':
+        """
+        Mock health failure.
+        Note that you need to decorate your test case with @responses.activate
+        """
+        already_mocked = [m for m in responses.mock._matches if m.url == f'{self.server_uri}/health']
+        if already_mocked:
+            responses.replace(
+                url=f'{self.server_uri}/health',
+                method_or_response=responses.GET,
+                status=500,
+                body="Internal server error"
+            )
+        else:
+            responses.add(
+                url=f'{self.server_uri}/health',
+                method=responses.GET,
+                status=500,
+                body="Internal server error"
+            )
+
+        return self
+
+    def health_should_succeed(self) -> 'AdamMock':
+        """
+        Mock health success.
+        Note that you need to decorate your test case with @responses.activate
+        """
+        already_mocked = [m for m in responses.mock._matches if m.url == f'{self.server_uri}/health']
+        if already_mocked:
+            responses.replace(
+                url=f'{self.server_uri}/health',
+                method_or_response=responses.GET,
+                status=200,
+                body="service is ok"
+            )
+        else:
+            responses.add(
+                url=f'{self.server_uri}/health',
+                method=responses.GET,
+                status=200,
+                body="service is ok"
+            )
+
+        return self
+
 
 def mock_user_groups(uri: str, user: str, *groups) -> None:
     """
