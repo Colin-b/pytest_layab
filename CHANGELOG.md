@@ -11,6 +11,7 @@ List all changes in various categories:
 ### Enhancements ###
 
 - Add async methods for testing asynchronous service
+- Celery mock automatically applied on testing app
 
 ## Version 4.1.0 (2018-12-04) ##
 

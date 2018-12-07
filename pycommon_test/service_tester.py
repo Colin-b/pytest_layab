@@ -1,15 +1,36 @@
 import json
+import json
 import logging
-import os
-from typing import Dict, List, Union
+import os.path
+from typing import List, Dict
+from typing import Union
 
 from flask_testing import TestCase
+
+from pycommon_test.celery_mock import TestCeleryAppProxy
 
 os.environ['SERVER_ENVIRONMENT'] = 'test'  # Ensure that test configuration will be loaded
 logger = logging.getLogger(__name__)
 
 
 class JSONTestCase(TestCase):
+    tested_module: str = None
+
+    def create_app(self):
+        from importlib import import_module
+        try:
+            celery_server = import_module(f'{self.tested_module}.celery_server')
+
+            celery_app_func = celery_server.get_celery_app
+
+            celery_server.get_celery_app = lambda x: TestCeleryAppProxy(celery_app_func(x))
+        except ImportError:
+            pass
+
+        server = import_module(f'{self.tested_module}.server')
+
+        server.application.testing = True
+        return server.application
 
     def setUp(self):
         self._log_start()
@@ -202,59 +223,51 @@ class JSONTestCase(TestCase):
 
     def get_async(self, url: str, *args, **kwargs):
         response = self.client.get(url, *args, **kwargs)
-        return self.async_method(response)
+        return self._async_method(response)
 
     def put_async(self, url: str, *args, **kwargs):
         response = self.client.put(url, *args, **kwargs)
-        return self.async_method(response)
+        return self._async_method(response)
 
     def post_async(self, url: str, *args, **kwargs):
         response = self.client.post(url, *args, **kwargs)
-        return self.async_method(response)
+        return self._async_method(response)
 
-    def async_method(self, response):
+    def _async_method(self, response):
         if response.status_code == 202:
-            return self.assert_async(response)
+            return self._assert_async(response)
         else:
             return response
 
     def delete_async(self, url: str, *args, **kwargs):
         response = self.client.delete(url, *args, **kwargs)
-        return self.async_method(response)
+        return self._async_method(response)
 
-    def assert_async(self, response):
+    def _assert_async(self, response):
         status_url = self.assert_202_regex(response, '.*')
         status_reply = self.client.get(status_url)
         result_url = self.assert_303_regex(status_reply, '.*')
         return self.client.get(result_url)
 
-    def put_json(self, url, json_body, asynchronous=False, **kwargs):
+    def put_json(self, url, json_body, **kwargs):
         """
         Send a PUT request to this URL.
 
         :param url: Relative server URL (starts with /).
         :param json_body: Python structure corresponding to the JSON to be sent.
-        :param asynchronous: Flag to set to true in case the service endpoint is asynchrnous.
         :return: Received response.
         """
-        if asynchronous:
-            return self.put_async(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
-        else:
-            return self.client.put(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
+        return self.put_async(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
 
-    def post_json(self, url, json_body, asynchronous=False, **kwargs):
+    def post_json(self, url, json_body, **kwargs):
         """
         Send a POST request to this URL.
 
         :param url: Relative server URL (starts with /).
         :param json_body: Python structure corresponding to the JSON to be sent.
-        :param asynchronous: Flag to set to true in case the service endpoint is asynchrnous.
         :return: Received response.
         """
-        if asynchronous:
-            return self.post_async(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
-        else:
-            return self.client.post(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
+        return self.post_async(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
 
 
 def _to_form(body: bytes) -> Dict[str, Union[bytes, str, List[Union[bytes, str]]]]:
