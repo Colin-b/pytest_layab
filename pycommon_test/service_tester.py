@@ -1,8 +1,9 @@
-import os
 import json
 import logging
-from flask_testing import TestCase
+import os
 from typing import Dict, List, Union
+
+from flask_testing import TestCase
 
 os.environ['SERVER_ENVIRONMENT'] = 'test'  # Ensure that test configuration will be loaded
 logger = logging.getLogger(__name__)
@@ -42,6 +43,7 @@ class JSONTestCase(TestCase):
         201 stands for Created, meaning that location header is expected as well.
         Assert that location header is containing the expected location (hostname trimmed for tests)
 
+        :param response: response object from service to be asserted
         :param expected_location: Expected location starting from server root (eg: /xxx)
         :return Location from server root.
         """
@@ -56,6 +58,7 @@ class JSONTestCase(TestCase):
         202 stands for Accepted, meaning that location header is expected as well.
         Assert that location header is containing the expected location (hostname trimmed for tests)
 
+        :param response: response object from service to be asserted
         :param expected_location_regex: Expected location starting from server root (eg: /xxx). Can be a regular exp.
         :return Location from server root.
         """
@@ -79,6 +82,7 @@ class JSONTestCase(TestCase):
         303 stands for See Other, meaning that location header is expected as well.
         Assert that location header is containing the expected location (hostname trimmed for tests)
 
+        :param response: response object from service to be asserted
         :param expected_location_regex: Expected location starting from server root (eg: /xxx). Can be a regular exp.
         :return Location from server root.
         """
@@ -183,7 +187,8 @@ class JSONTestCase(TestCase):
             for method_key, actual_method in actual_path.items():
                 expected_method = expected_path.get(method_key, {})
                 if 'parameters' in expected_method:
-                    expected_parameters = sorted(expected_method.get('parameters', {}), key=lambda parameter: parameter.get('name', None))
+                    expected_parameters = sorted(expected_method.get('parameters', {}),
+                                                 key=lambda parameter: parameter.get('name', None))
                 else:
                     expected_parameters = None
                 expected_method['parameters'] = None
@@ -195,32 +200,61 @@ class JSONTestCase(TestCase):
                 self.assertEqual(expected_method, actual_method)
                 self.assertEqual(expected_parameters, actual_parameters)
 
-    def post_json(self, url, json_body, **kwargs):
-        """
-        Send a POST request to this URL.
-
-        :param url: Relative server URL (starts with /).
-        :param json_body: Python structure corresponding to the JSON to be sent.
-        :return: Received response.
-        """
-        return self.client.post(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
-
-    def get_async(self, url, *args, **kwargs):
+    def get_async(self, url: str, *args, **kwargs):
         response = self.client.get(url, *args, **kwargs)
+        return self.async_method(response)
+
+    def put_async(self, url: str, *args, **kwargs):
+        response = self.client.put(url, *args, **kwargs)
+        return self.async_method(response)
+
+    def post_async(self, url: str, *args, **kwargs):
+        response = self.client.post(url, *args, **kwargs)
+        return self.async_method(response)
+
+    def async_method(self, response):
+        if response.status_code == 202:
+            return self.assert_async(response)
+        else:
+            return response
+
+    def delete_async(self, url: str, *args, **kwargs):
+        response = self.client.delete(url, *args, **kwargs)
+        return self.async_method(response)
+
+    def assert_async(self, response):
         status_url = self.assert_202_regex(response, '.*')
         status_reply = self.client.get(status_url)
         result_url = self.assert_303_regex(status_reply, '.*')
         return self.client.get(result_url)
 
-    def put_json(self, url, json_body, **kwargs):
+    def put_json(self, url, json_body, asynchronous=False, **kwargs):
         """
         Send a PUT request to this URL.
 
         :param url: Relative server URL (starts with /).
         :param json_body: Python structure corresponding to the JSON to be sent.
+        :param asynchronous: Flag to set to true in case the service endpoint is asynchrnous.
         :return: Received response.
         """
-        return self.client.put(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
+        if asynchronous:
+            return self.put_async(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
+        else:
+            return self.client.put(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
+
+    def post_json(self, url, json_body, asynchronous=False, **kwargs):
+        """
+        Send a POST request to this URL.
+
+        :param url: Relative server URL (starts with /).
+        :param json_body: Python structure corresponding to the JSON to be sent.
+        :param asynchronous: Flag to set to true in case the service endpoint is asynchrnous.
+        :return: Received response.
+        """
+        if asynchronous:
+            return self.post_async(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
+        else:
+            return self.client.post(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
 
 
 def _to_form(body: bytes) -> Dict[str, Union[bytes, str, List[Union[bytes, str]]]]:

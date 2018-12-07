@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 4.2.0 (2018-12-04) ##
+
+### Enhancements ###
+
+- Add async methods for testing asynchronous service
+
 ## Version 4.1.0 (2018-12-04) ##
 
 ### Enhancements ###
