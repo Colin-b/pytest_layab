@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 4.2.0 (2018-12-10) ##
+
+### Enhancements ###
+
+- JSON equality is now discarding order of values in lists within dictionary.
+
 ## Version 4.1.0 (2018-12-04) ##
 
 ### Enhancements ###
