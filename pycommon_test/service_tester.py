@@ -95,8 +95,17 @@ class JSONTestCase(TestCase):
         :param expected: Expected python structure corresponding to the JSON.
         """
         actual = _to_json(response.data)
+        self._assert_json_equal(expected, actual)
+
+    def _assert_json_equal(self, expected, actual):
         if isinstance(actual, list):  # List order does not matter in JSON
             self.assertCountEqual(expected, actual)
+        elif isinstance(actual, dict):  # Allow to validate inner lists in JSON dict
+            if len(expected) != len(actual):
+                self.assertEqual(expected, actual, 'Number of elements is not the same.')  # Will give a clean comparison
+            else:
+                for expected_key in expected.keys():
+                    self._assert_json_equal(expected[expected_key], actual.get(expected_key))
         else:
             self.assertEqual(expected, actual)
 
