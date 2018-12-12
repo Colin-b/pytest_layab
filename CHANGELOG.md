@@ -6,12 +6,22 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
-## Version 4.2.0 (2018-12-04) ##
+## Version 5.0.0 (2018-12-12) ##
+
+### Release notes ###
+
+- JSONTestCase will now create the application by itself. It requires the name of the service as class attribute.
 
 ### Enhancements ###
 
-- Add async methods for testing asynchronous service
-- Celery mock automatically applied on testing app
+- Add async methods for testing asynchronous service.
+- Celery mock automatically applied on testing app.
+
+## Version 4.2.0 (2018-12-10) ##
+
+### Enhancements ###
+
+- JSON equality is now discarding order of values in lists within dictionary.
 
 ## Version 4.1.0 (2018-12-04) ##
 

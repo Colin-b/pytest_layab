@@ -1,30 +1,30 @@
 import json
 import logging
 import os.path
-from typing import List, Dict
-from typing import Union
+from typing import List, Dict, Union
 
 from flask_testing import TestCase
-
-from pycommon_test.celery_mock import TestCeleryAppProxy
+import responses
 
 os.environ['SERVER_ENVIRONMENT'] = 'test'  # Ensure that test configuration will be loaded
 logger = logging.getLogger(__name__)
 
 
 class JSONTestCase(TestCase):
-    tested_module: str = None
+    tested_module: str = None  # This is the name of the python module root folder.
 
     def create_app(self):
         from importlib import import_module
         try:
+            from pycommon_test.celery_mock import TestCeleryAppProxy
+
             celery_server = import_module(f'{self.tested_module}.celery_server')
 
             celery_app_func = celery_server.get_celery_app
 
             celery_server.get_celery_app = lambda x: TestCeleryAppProxy(celery_app_func(x))
         except ImportError:
-            pass
+            pass  # Celery might not be required by application
 
         server = import_module(f'{self.tested_module}.server')
 
@@ -119,8 +119,17 @@ class JSONTestCase(TestCase):
         :param expected: Expected python structure corresponding to the JSON.
         """
         actual = _to_json(response.data)
+        self._assert_json_equal(expected, actual)
+
+    def _assert_json_equal(self, expected, actual):
         if isinstance(actual, list):  # List order does not matter in JSON
             self.assertCountEqual(expected, actual)
+        elif isinstance(actual, dict):  # Allow to validate inner lists in JSON dict
+            if len(expected) != len(actual):
+                self.assertEqual(expected, actual, 'Number of elements is not the same.')  # Will give a clean comparison
+            else:
+                for expected_key in expected.keys():
+                    self._assert_json_equal(expected[expected_key], actual.get(expected_key))
         else:
             self.assertEqual(expected, actual)
 
@@ -220,25 +229,24 @@ class JSONTestCase(TestCase):
                 self.assertEqual(expected_method, actual_method)
                 self.assertEqual(expected_parameters, actual_parameters)
 
-    def get_async(self, url: str, *args, **kwargs):
+    def get(self, url: str, *args, **kwargs):
         response = self.client.get(url, *args, **kwargs)
         return self._async_method(response)
 
-    def put_async(self, url: str, *args, **kwargs):
+    def put(self, url: str, *args, **kwargs):
         response = self.client.put(url, *args, **kwargs)
         return self._async_method(response)
 
-    def post_async(self, url: str, *args, **kwargs):
+    def post(self, url: str, *args, **kwargs):
         response = self.client.post(url, *args, **kwargs)
         return self._async_method(response)
 
     def _async_method(self, response):
         if response.status_code == 202:
             return self._assert_async(response)
-        else:
-            return response
+        return response
 
-    def delete_async(self, url: str, *args, **kwargs):
+    def delete(self, url: str, *args, **kwargs):
         response = self.client.delete(url, *args, **kwargs)
         return self._async_method(response)
 
@@ -256,7 +264,7 @@ class JSONTestCase(TestCase):
         :param json_body: Python structure corresponding to the JSON to be sent.
         :return: Received response.
         """
-        return self.put_async(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
+        return self.put(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
 
     def post_json(self, url, json_body, **kwargs):
         """
@@ -266,7 +274,7 @@ class JSONTestCase(TestCase):
         :param json_body: Python structure corresponding to the JSON to be sent.
         :return: Received response.
         """
-        return self.post_async(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
+        return self.post(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
 
 
 def _to_form(body: bytes) -> Dict[str, Union[bytes, str, List[Union[bytes, str]]]]:
@@ -301,11 +309,6 @@ def _to_json(body: bytes):
 
 
 def _get_request(url: str):
-    try:
-        import responses
-    except ImportError:
-        raise Exception('responses python module is required.')
-
     for call in responses.calls:
         if call.request.url == url:
             responses.calls._calls.remove(call)  # Pop out verified request (to be able to check multiple requests)
