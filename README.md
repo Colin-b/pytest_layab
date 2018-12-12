@@ -167,6 +167,24 @@ class ServerTest(JSONTestCase):
         self.assert_text_regex(response, 'Expected \d\d value')
 ```
 
+### Mocking response sent by another service to this service ###
+
+```python
+import responses
+
+from pycommon_test.service_tester import JSONTestCase, add_get_response, add_post_response
+
+
+class ServerTest(JSONTestCase):
+    @responses.activate
+    def test_get_request_mocking(self):
+        add_get_response('http://external_url', {'key': 'value'})
+
+    @responses.activate
+    def test_post_request_mocking(self):
+        add_post_response('http://external_url', {'key': 'value'})
+```
+
 ### Checking JSON sent by service to another service ###
 
 ```python
