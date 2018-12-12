@@ -50,6 +50,17 @@ class ServerTest(JSONTestCase):
         })
 ```
 
+### Posting file ###
+
+```python
+from pycommon_test.service_tester import JSONTestCase
+
+
+class ServerTest(JSONTestCase):
+    def test_file_post(self):
+        response = self.post_file('/my_endpoint', 'file_name', 'file/path')
+```
+
 ### Posting non JSON ###
 
 ```python
