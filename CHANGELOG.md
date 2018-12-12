@@ -6,6 +6,14 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 4.3.0 (2018-12-12) ##
+
+### Enhancements ###
+
+- JSONTestCase can now create the application by itself (default behavior).
+- Add async methods for testing asynchronous service.
+- Celery mock automatically applied on testing app.
+
 ## Version 4.2.0 (2018-12-10) ##
 
 ### Enhancements ###

@@ -1,14 +1,51 @@
-import os
 import json
 import logging
+import os.path
+from typing import List, Dict, Union
+import sys
+import glob
+
 from flask_testing import TestCase
-from typing import Dict, List, Union
+import responses
 
 os.environ['SERVER_ENVIRONMENT'] = 'test'  # Ensure that test configuration will be loaded
 logger = logging.getLogger(__name__)
 
 
 class JSONTestCase(TestCase):
+    _service_module_name = None
+
+    def _find_service_module_name(self) -> str:
+        test_file_path = sys.modules[self.__module__].__file__
+        test_folder_path = os.path.dirname(test_file_path)
+        root_folder_path = os.path.join(test_folder_path, '..')
+        service_files = glob.glob(f'{root_folder_path}/*/server.py')
+        if len(service_files) != 1:
+            raise Exception(f'Unable to locate the server.py file: {service_files}.')
+        service_module_path = os.path.dirname(service_files[0])
+        return os.path.basename(service_module_path)
+
+    def create_app(self):
+        # Retrieve service module name only once
+        if not JSONTestCase._service_module_name:
+            JSONTestCase._service_module_name = self._find_service_module_name()
+
+        from importlib import import_module
+        try:
+            from pycommon_test.celery_mock import TestCeleryAppProxy
+
+            celery_server = import_module(f'{JSONTestCase._service_module_name}.celery_server')
+
+            celery_app_func = celery_server.get_celery_app
+
+            celery_server.get_celery_app = lambda x: TestCeleryAppProxy(celery_app_func(x))
+        except ImportError:
+            pass  # Celery might not be required by application
+
+        server = import_module(f'{JSONTestCase._service_module_name}.server')
+
+        server.application.testing = True
+        return server.application
 
     def setUp(self):
         self._log_start()
@@ -42,6 +79,7 @@ class JSONTestCase(TestCase):
         201 stands for Created, meaning that location header is expected as well.
         Assert that location header is containing the expected location (hostname trimmed for tests)
 
+        :param response: response object from service to be asserted
         :param expected_location: Expected location starting from server root (eg: /xxx)
         :return Location from server root.
         """
@@ -56,6 +94,7 @@ class JSONTestCase(TestCase):
         202 stands for Accepted, meaning that location header is expected as well.
         Assert that location header is containing the expected location (hostname trimmed for tests)
 
+        :param response: response object from service to be asserted
         :param expected_location_regex: Expected location starting from server root (eg: /xxx). Can be a regular exp.
         :return Location from server root.
         """
@@ -79,6 +118,7 @@ class JSONTestCase(TestCase):
         303 stands for See Other, meaning that location header is expected as well.
         Assert that location header is containing the expected location (hostname trimmed for tests)
 
+        :param response: response object from service to be asserted
         :param expected_location_regex: Expected location starting from server root (eg: /xxx). Can be a regular exp.
         :return Location from server root.
         """
@@ -192,7 +232,8 @@ class JSONTestCase(TestCase):
             for method_key, actual_method in actual_path.items():
                 expected_method = expected_path.get(method_key, {})
                 if 'parameters' in expected_method:
-                    expected_parameters = sorted(expected_method.get('parameters', {}), key=lambda parameter: parameter.get('name', None))
+                    expected_parameters = sorted(expected_method.get('parameters', {}),
+                                                 key=lambda parameter: parameter.get('name', None))
                 else:
                     expected_parameters = None
                 expected_method['parameters'] = None
@@ -204,18 +245,28 @@ class JSONTestCase(TestCase):
                 self.assertEqual(expected_method, actual_method)
                 self.assertEqual(expected_parameters, actual_parameters)
 
-    def post_json(self, url, json_body, **kwargs):
-        """
-        Send a POST request to this URL.
-
-        :param url: Relative server URL (starts with /).
-        :param json_body: Python structure corresponding to the JSON to be sent.
-        :return: Received response.
-        """
-        return self.client.post(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
-
-    def get_async(self, url, *args, **kwargs):
+    def get(self, url: str, *args, **kwargs):
         response = self.client.get(url, *args, **kwargs)
+        return self._async_method(response)
+
+    def put(self, url: str, *args, **kwargs):
+        response = self.client.put(url, *args, **kwargs)
+        return self._async_method(response)
+
+    def post(self, url: str, *args, **kwargs):
+        response = self.client.post(url, *args, **kwargs)
+        return self._async_method(response)
+
+    def _async_method(self, response):
+        if response.status_code == 202:
+            return self._assert_async(response)
+        return response
+
+    def delete(self, url: str, *args, **kwargs):
+        response = self.client.delete(url, *args, **kwargs)
+        return self._async_method(response)
+
+    def _assert_async(self, response):
         status_url = self.assert_202_regex(response, '.*')
         status_reply = self.client.get(status_url)
         result_url = self.assert_303_regex(status_reply, '.*')
@@ -229,7 +280,17 @@ class JSONTestCase(TestCase):
         :param json_body: Python structure corresponding to the JSON to be sent.
         :return: Received response.
         """
-        return self.client.put(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
+        return self.put(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
+
+    def post_json(self, url, json_body, **kwargs):
+        """
+        Send a POST request to this URL.
+
+        :param url: Relative server URL (starts with /).
+        :param json_body: Python structure corresponding to the JSON to be sent.
+        :return: Received response.
+        """
+        return self.post(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
 
 
 def _to_form(body: bytes) -> Dict[str, Union[bytes, str, List[Union[bytes, str]]]]:
@@ -264,11 +325,6 @@ def _to_json(body: bytes):
 
 
 def _get_request(url: str):
-    try:
-        import responses
-    except ImportError:
-        raise Exception('responses python module is required.')
-
     for call in responses.calls:
         if call.request.url == url:
             responses.calls._calls.remove(call)  # Pop out verified request (to be able to check multiple requests)
