@@ -6,14 +6,11 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
-## Version 5.0.0 (2018-12-12) ##
-
-### Release notes ###
-
-- JSONTestCase will now create the application by itself. It requires the name of the service as class attribute.
+## Version 4.3.0 (2018-12-12) ##
 
 ### Enhancements ###
 
+- JSONTestCase can now create the application by itself (default behavior).
 - Add async methods for testing asynchronous service.
 - Celery mock automatically applied on testing app.
 

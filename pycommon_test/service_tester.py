@@ -2,6 +2,8 @@ import json
 import logging
 import os.path
 from typing import List, Dict, Union
+import sys
+import glob
 
 from flask_testing import TestCase
 import responses
@@ -11,14 +13,28 @@ logger = logging.getLogger(__name__)
 
 
 class JSONTestCase(TestCase):
-    tested_module: str = None  # This is the name of the python module root folder.
+    _service_module_name = None
+
+    def _find_service_module_name(self) -> str:
+        test_file_path = sys.modules[self.__module__].__file__
+        test_folder_path = os.path.dirname(test_file_path)
+        root_folder_path = os.path.join(test_folder_path, '..')
+        service_files = glob.glob(f'{root_folder_path}/*/server.py')
+        if len(service_files) != 1:
+            raise Exception(f'Unable to locate the server.py file: {service_files}.')
+        service_module_path = os.path.dirname(service_files[0])
+        return os.path.basename(service_module_path)
 
     def create_app(self):
+        # Retrieve service module name only once
+        if not JSONTestCase._service_module_name:
+            JSONTestCase._service_module_name = self._find_service_module_name()
+
         from importlib import import_module
         try:
             from pycommon_test.celery_mock import TestCeleryAppProxy
 
-            celery_server = import_module(f'{self.tested_module}.celery_server')
+            celery_server = import_module(f'{JSONTestCase._service_module_name}.celery_server')
 
             celery_app_func = celery_server.get_celery_app
 
@@ -26,7 +42,7 @@ class JSONTestCase(TestCase):
         except ImportError:
             pass  # Celery might not be required by application
 
-        server = import_module(f'{self.tested_module}.server')
+        server = import_module(f'{JSONTestCase._service_module_name}.server')
 
         server.application.testing = True
         return server.application

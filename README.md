@@ -16,7 +16,6 @@ from pycommon_test.service_tester import JSONTestCase
 
 
 class ServerTest(JSONTestCase):
-    tested_module = 'my_module'
 
     def clear_database(self):
         # TODO You can clear database by overriding this method
