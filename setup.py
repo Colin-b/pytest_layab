@@ -15,5 +15,11 @@ setup(
         'nose==1.3.7',
         # Used to check code coverage
         'coverage==4.5.2',
-    ]
+    ],
+    extras_require={
+        'testing': [
+            # Used to manage responses testing
+            'requests==2.21.0',
+        ],
+    },
 )
