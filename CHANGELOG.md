@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 4.4.0 (2018-12-12) ##
+
+### Enhancements ###
+
+- JSONTestCase now provides post_file method.
+
 ## Version 4.3.0 (2018-12-12) ##
 
 ### Enhancements ###

@@ -246,33 +246,62 @@ class JSONTestCase(TestCase):
                 self.assertEqual(expected_parameters, actual_parameters)
 
     def get(self, url: str, *args, **kwargs):
+        """
+        Send a GET request to this URL.
+
+        :param url: Relative server URL (starts with /).
+        :return: Received response.
+        """
         response = self.client.get(url, *args, **kwargs)
         return self._async_method(response)
 
-    def put(self, url: str, *args, **kwargs):
-        response = self.client.put(url, *args, **kwargs)
-        return self._async_method(response)
-
     def post(self, url: str, *args, **kwargs):
+        """
+        Send a POST request to this URL.
+
+        :param url: Relative server URL (starts with /).
+        :return: Received response.
+        """
         response = self.client.post(url, *args, **kwargs)
         return self._async_method(response)
 
-    def _async_method(self, response):
-        if response.status_code == 202:
-            return self._assert_async(response)
-        return response
+    def post_json(self, url: str, json_body: Union[Dict, List], **kwargs):
+        """
+        Send a POST request to this URL.
 
-    def delete(self, url: str, *args, **kwargs):
-        response = self.client.delete(url, *args, **kwargs)
+        :param url: Relative server URL (starts with /).
+        :param json_body: Python structure corresponding to the JSON to be sent.
+        :return: Received response.
+        """
+        return self.post(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
+
+    def post_file(self, url: str, file_name: str, file_path: str, additional_json: dict=None, **kwargs):
+        """
+        Send a POST request to this URL.
+
+        :param url: Relative server URL (starts with /).
+        :param file_name: Name of the parameter corresponding to the file to be sent.
+        :param file_path: Path to the file that should be sent.
+        :param additional_json: Additional JSON to be sent in body.
+        :return: Received response.
+        """
+        with open(file_path, 'rb') as file:
+            data = {file_name: (file, file_name)}
+            if additional_json:
+                data.update(additional_json)
+            return self.post(url, data=data, **kwargs)
+
+    def put(self, url: str, *args, **kwargs):
+        """
+        Send a PUT request to this URL.
+
+        :param url: Relative server URL (starts with /).
+        :return: Received response.
+        """
+        response = self.client.put(url, *args, **kwargs)
         return self._async_method(response)
 
-    def _assert_async(self, response):
-        status_url = self.assert_202_regex(response, '.*')
-        status_reply = self.client.get(status_url)
-        result_url = self.assert_303_regex(status_reply, '.*')
-        return self.client.get(result_url)
-
-    def put_json(self, url, json_body, **kwargs):
+    def put_json(self, url: str, json_body: Union[Dict, List], **kwargs):
         """
         Send a PUT request to this URL.
 
@@ -282,15 +311,26 @@ class JSONTestCase(TestCase):
         """
         return self.put(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
 
-    def post_json(self, url, json_body, **kwargs):
+    def delete(self, url: str, *args, **kwargs):
         """
-        Send a POST request to this URL.
+        Send a DELETE request to this URL.
 
         :param url: Relative server URL (starts with /).
-        :param json_body: Python structure corresponding to the JSON to be sent.
         :return: Received response.
         """
-        return self.post(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
+        response = self.client.delete(url, *args, **kwargs)
+        return self._async_method(response)
+
+    def _async_method(self, response):
+        if response.status_code == 202:
+            return self._assert_async(response)
+        return response
+
+    def _assert_async(self, response):
+        status_url = self.assert_202_regex(response, '.*')
+        status_reply = self.client.get(status_url)
+        result_url = self.assert_303_regex(status_reply, '.*')
+        return self.client.get(result_url)
 
 
 def _to_form(body: bytes) -> Dict[str, Union[bytes, str, List[Union[bytes, str]]]]:
