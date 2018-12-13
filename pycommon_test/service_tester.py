@@ -12,6 +12,28 @@ os.environ['SERVER_ENVIRONMENT'] = 'test'  # Ensure that test configuration will
 logger = logging.getLogger(__name__)
 
 
+def add_get_response(url: str, data=None, file_path: str=None, status=200, **kwargs):
+    _add_response(responses.GET, url, data, file_path, status, **kwargs)
+
+
+def add_post_response(url: str, data=None, file_path: str=None, status=200, **kwargs):
+    _add_response(responses.POST, url, data, file_path, status, **kwargs)
+
+
+def _add_response(method, url: str, data=None, file_path: str=None, status=200, **kwargs):
+    if file_path:
+        with open(file_path, 'rb') as file:
+            kwargs['body'] = file.read()
+
+    if data:
+        if isinstance(data, dict) or isinstance(data, list):
+            kwargs['json'] = data
+        else:
+            kwargs['body'] = data
+
+    responses.add(method=method, url=url, status=status, **kwargs)
+
+
 class JSONTestCase(TestCase):
     _service_module_name = None
 
