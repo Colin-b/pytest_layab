@@ -6,11 +6,17 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 4.7.0 (2018-12-14) ##
+
+### Enhancements ###
+
+- service_tester.JSONTestCase now provides handle_202 parameter to avoid specific 202 handling.
+
 ## Version 4.6.0 (2018-12-14) ##
 
 ### Enhancements ###
 
-- service_tester now provides assert_file method.
+- service_tester.JSONTestCase now provides assert_file method.
 
 ## Version 4.5.0 (2018-12-13) ##
 
@@ -22,13 +28,13 @@ List all changes in various categories:
 
 ### Enhancements ###
 
-- JSONTestCase now provides post_file method.
+- service_tester.JSONTestCase now provides post_file method.
 
 ## Version 4.3.0 (2018-12-12) ##
 
 ### Enhancements ###
 
-- JSONTestCase can now create the application by itself (default behavior).
+- service_tester.JSONTestCase can now create the application by itself (default behavior).
 - Add async methods for testing asynchronous service.
 - Celery mock automatically applied on testing app.
 
