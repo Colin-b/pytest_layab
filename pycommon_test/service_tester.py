@@ -277,25 +277,27 @@ class JSONTestCase(TestCase):
                 self.assertEqual(expected_method, actual_method)
                 self.assertEqual(expected_parameters, actual_parameters)
 
-    def get(self, url: str, *args, **kwargs):
+    def get(self, url: str, handle_202: bool=True, *args, **kwargs):
         """
         Send a GET request to this URL.
 
         :param url: Relative server URL (starts with /).
+        :param handle_202: Handle 202 status code by requesting the corresponding location. Default to True.
         :return: Received response.
         """
         response = self.client.get(url, *args, **kwargs)
-        return self._async_method(response)
+        return self._async_method(response, handle_202)
 
-    def post(self, url: str, *args, **kwargs):
+    def post(self, url: str, handle_202: bool=True, *args, **kwargs):
         """
         Send a POST request to this URL.
 
         :param url: Relative server URL (starts with /).
+        :param handle_202: Handle 202 status code by requesting the corresponding location. Default to True.
         :return: Received response.
         """
         response = self.client.post(url, *args, **kwargs)
-        return self._async_method(response)
+        return self._async_method(response, handle_202)
 
     def post_json(self, url: str, json_body: Union[Dict, List], **kwargs):
         """
@@ -303,6 +305,7 @@ class JSONTestCase(TestCase):
 
         :param url: Relative server URL (starts with /).
         :param json_body: Python structure corresponding to the JSON to be sent.
+        :param handle_202: Handle 202 status code by requesting the corresponding location. Default to True.
         :return: Received response.
         """
         return self.post(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
@@ -315,6 +318,7 @@ class JSONTestCase(TestCase):
         :param file_name: Name of the parameter corresponding to the file to be sent.
         :param file_path: Path to the file that should be sent.
         :param additional_json: Additional JSON to be sent in body.
+        :param handle_202: Handle 202 status code by requesting the corresponding location. Default to True.
         :return: Received response.
         """
         with open(file_path, 'rb') as file:
@@ -323,15 +327,16 @@ class JSONTestCase(TestCase):
                 data.update(additional_json)
             return self.post(url, data=data, **kwargs)
 
-    def put(self, url: str, *args, **kwargs):
+    def put(self, url: str, handle_202: bool=True, *args, **kwargs):
         """
         Send a PUT request to this URL.
 
         :param url: Relative server URL (starts with /).
+        :param handle_202: Handle 202 status code by requesting the corresponding location. Default to True.
         :return: Received response.
         """
         response = self.client.put(url, *args, **kwargs)
-        return self._async_method(response)
+        return self._async_method(response, handle_202)
 
     def put_json(self, url: str, json_body: Union[Dict, List], **kwargs):
         """
@@ -339,22 +344,24 @@ class JSONTestCase(TestCase):
 
         :param url: Relative server URL (starts with /).
         :param json_body: Python structure corresponding to the JSON to be sent.
+        :param handle_202: Handle 202 status code by requesting the corresponding location. Default to True.
         :return: Received response.
         """
         return self.put(url, data=json.dumps(json_body), content_type='application/json', **kwargs)
 
-    def delete(self, url: str, *args, **kwargs):
+    def delete(self, url: str, handle_202: bool=True, *args, **kwargs):
         """
         Send a DELETE request to this URL.
 
         :param url: Relative server URL (starts with /).
+        :param handle_202: Handle 202 status code by requesting the corresponding location. Default to True.
         :return: Received response.
         """
         response = self.client.delete(url, *args, **kwargs)
-        return self._async_method(response)
+        return self._async_method(response, handle_202)
 
-    def _async_method(self, response):
-        if response.status_code == 202:
+    def _async_method(self, response, handle_202: bool):
+        if response.status_code == 202 and handle_202:
             return self._assert_async(response)
         return response
 
