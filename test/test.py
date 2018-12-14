@@ -1,5 +1,7 @@
 import responses
 import requests
+import tempfile
+import os.path
 
 from pycommon_test import (
     service_tester,
@@ -20,6 +22,10 @@ class ServiceTesterMock(service_tester.JSONTestCase):
         def test_add_post_response():
             return flask.jsonify(requests.post('http://test', flask.request.json).json())
 
+        @app.route('/test_assert_file')
+        def test_assert_file():
+            return flask.make_response('toto')
+
         app.testing = True
         return app
 
@@ -36,3 +42,12 @@ class ServiceTesterMock(service_tester.JSONTestCase):
         response = self.post_json('/test_add_post_response', {})
         self.assert_200(response)
         self.assert_json(response, {'test': 'test value'})
+
+    def test_assert_file(self):
+        response = self.get('/test_assert_file')
+        self.assert_200(response)
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_file_path = os.path.join(temp_dir, 'test_file')
+            with open(temp_file_path, 'wt') as test_file:
+                test_file.write('toto')
+            self.assert_file(response, temp_file_path)
