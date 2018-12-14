@@ -116,7 +116,7 @@ class ServiceTesterMock(service_tester.JSONTestCase):
             temp_file_path = os.path.join(temp_dir, 'test_file')
             with open(temp_file_path, 'wt') as test_file:
                 test_file.write('toto')
-            response = self.post_file('/test_post_file_without_handle_202', file_name='test_file', file_path=temp_file_path, handle_202=False)
+            response = self.post_file('/test_post_file_without_handle_202', 'test_file', temp_file_path, handle_202=False)
             self.assert_202_regex(response, 'http://test')
             self.assert_file(response, temp_file_path)
 
