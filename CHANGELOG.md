@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 4.6.0 (2018-12-14) ##
+
+### Enhancements ###
+
+- service_tester now provides assert_file method.
+
 ## Version 4.5.0 (2018-12-13) ##
 
 ### Enhancements ###

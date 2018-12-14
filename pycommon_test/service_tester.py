@@ -199,6 +199,16 @@ class JSONTestCase(TestCase):
         """
         self.assertRegex(_to_text(response.data), expected)
 
+    def assert_file(self, response, expected_file_path: str):
+        """
+        Assert that response is containing the bytes contained in expected file.
+
+        :param response: Received query response.
+        :param expected_file_path: Path to the file containing expected bytes.
+        """
+        with open(expected_file_path, 'rb') as expected_file:
+            self.assertEqual(expected_file.read(), response.data)
+
     def received_form(self, url: str) -> Dict[str, Union[bytes, str, List[Union[bytes, str]]]]:
         return _to_form(self.received_bytes(url))
 
