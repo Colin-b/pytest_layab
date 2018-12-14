@@ -165,6 +165,22 @@ class ServerTest(JSONTestCase):
     def test_text_with_regular_expression(self):
         response = None
         self.assert_text_regex(response, 'Expected \d\d value')
+
+    def test_text_with_content_in_a_file(self):
+        response = None
+        self.assert_file(response, 'path/to/file/with/expected/content')
+```
+
+### Checking response bytes ###
+
+```python
+from pycommon_test.service_tester import JSONTestCase
+
+
+class ServerTest(JSONTestCase):
+    def test_bytes_with_content_in_a_file(self):
+        response = None
+        self.assert_file(response, 'path/to/file/with/expected/content')
 ```
 
 ### Mocking response sent by another service to this service ###
