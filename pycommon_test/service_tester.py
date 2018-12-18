@@ -1,12 +1,12 @@
+import glob
 import json
 import logging
 import os.path
-from typing import List, Dict, Union
 import sys
-import glob
+from typing import List, Dict, Union
 
-from flask_testing import TestCase
 import responses
+from flask_testing import TestCase
 
 os.environ['SERVER_ENVIRONMENT'] = 'test'  # Ensure that test configuration will be loaded
 logger = logging.getLogger(__name__)
@@ -36,6 +36,7 @@ def _add_response(method, url: str, data=None, file_path: str=None, status=200, 
 
 class JSONTestCase(TestCase):
     _service_module_name = None
+    server = None
 
     def _find_service_module_name(self) -> str:
         test_file_path = sys.modules[self.__module__].__file__
@@ -60,14 +61,20 @@ class JSONTestCase(TestCase):
 
             celery_app_func = celery_server.get_celery_app
 
-            celery_server.get_celery_app = lambda x: TestCeleryAppProxy(celery_app_func(x))
+            def proxify(func):
+                def wrapper(*args, **kwargs):
+                    result  = func(*args, **kwargs)
+                    return TestCeleryAppProxy(result)
+                return wrapper
+
+            celery_server.get_celery_app = proxify(celery_app_func)
         except ImportError:
             pass  # Celery might not be required by application
 
-        server = import_module(f'{JSONTestCase._service_module_name}.server')
+        self.server = import_module(f'{JSONTestCase._service_module_name}.server')
+        self.server.application.testing = True
 
-        server.application.testing = True
-        return server.application
+        return self.server.application
 
     def setUp(self):
         self._log_start()
