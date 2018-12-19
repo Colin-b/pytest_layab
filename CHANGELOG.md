@@ -6,6 +6,13 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 4.8.0 (2018-12-18) ##
+
+### Enhancements ###
+
+- Use decorator instead of lambda to add proxy on CeleryApp.
+- Initialized server is an attribute of JsonTestCase class.
+
 ## Version 4.7.0 (2018-12-14) ##
 
 ### Enhancements ###
