@@ -25,7 +25,7 @@ def _add_response(method, url: str, data=None, file_path: str=None, status=200, 
         with open(file_path, 'rb') as file:
             kwargs['body'] = file.read()
 
-    if data:
+    if data is not None:
         if isinstance(data, dict) or isinstance(data, list):
             kwargs['json'] = data
         else:
