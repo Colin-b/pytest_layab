@@ -1,7 +1,8 @@
-import responses
-import requests
-import tempfile
 import os.path
+import tempfile
+
+import requests
+import responses
 
 from pycommon_test import (
     service_tester,
@@ -81,11 +82,39 @@ class ServiceTesterMock(service_tester.JSONTestCase):
         self.assert_json(response, {'test': 'test value'})
 
     @responses.activate
+    def test_add_get_with_empty_dict_response(self):
+        service_tester.add_get_response('http://test', {})
+        response = self.get('/test_add_get_response')
+        self.assert_200(response)
+        self.assert_json(response, {})
+
+    @responses.activate
+    def test_add_get_empty_list_response(self):
+        service_tester.add_get_response('http://test', [])
+        response = self.get('/test_add_get_response')
+        self.assert_200(response)
+        self.assert_json(response, {})
+
+    @responses.activate
     def test_add_post_response(self):
         service_tester.add_post_response('http://test', {'test': 'test value'})
         response = self.post_json('/test_add_post_response', {})
         self.assert_200(response)
         self.assert_json(response, {'test': 'test value'})
+
+    @responses.activate
+    def test_add_post_with_empty_dict_response(self):
+        service_tester.add_post_response('http://test', {})
+        response = self.post_json('/test_add_post_response', {})
+        self.assert_200(response)
+        self.assert_json(response, {})
+
+    @responses.activate
+    def test_add_post_with_empty_list_response(self):
+        service_tester.add_post_response('http://test', [])
+        response = self.post_json('/test_add_post_response', {})
+        self.assert_200(response)
+        self.assert_json(response, [])
 
     def test_assert_file(self):
         response = self.get('/test_assert_file')

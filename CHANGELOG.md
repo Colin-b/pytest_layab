@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 4.8.1 (2018-12-20) ##
+
+### Bug fixes ###
+
+- Manage services returning empty list or dict.
+
 ## Version 4.8.0 (2018-12-18) ##
 
 ### Enhancements ###
