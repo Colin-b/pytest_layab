@@ -11,6 +11,7 @@ List all changes in various categories:
 ### Enhancements ###
 
 - Add a new mock for ldap3.
+- Update responses to latest version (0.10.5)
 
 ## Version 4.8.2 (2019-01-08) ##
 
