@@ -1,5 +1,6 @@
 import os.path
 import tempfile
+import re
 
 import requests
 import responses
@@ -82,6 +83,13 @@ class ServiceTesterMock(service_tester.JSONTestCase):
         self.assert_json(response, {'test': 'test value'})
 
     @responses.activate
+    def test_add_get_response_with_pattern(self):
+        service_tester.add_get_response(re.compile('http://t.*t'), {'test': 'test value'})
+        response = self.get('/test_add_get_response')
+        self.assert_200(response)
+        self.assert_json(response, {'test': 'test value'})
+
+    @responses.activate
     def test_add_get_with_empty_dict_response(self):
         service_tester.add_get_response('http://test', {})
         response = self.get('/test_add_get_response')
@@ -98,6 +106,13 @@ class ServiceTesterMock(service_tester.JSONTestCase):
     @responses.activate
     def test_add_post_response(self):
         service_tester.add_post_response('http://test', {'test': 'test value'})
+        response = self.post_json('/test_add_post_response', {})
+        self.assert_200(response)
+        self.assert_json(response, {'test': 'test value'})
+
+    @responses.activate
+    def test_add_post_response_with_pattern(self):
+        service_tester.add_post_response(re.compile('http://t.*t'), {'test': 'test value'})
         response = self.post_json('/test_add_post_response', {})
         self.assert_200(response)
         self.assert_json(response, {'test': 'test value'})

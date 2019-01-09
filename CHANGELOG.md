@@ -6,6 +6,13 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 4.8.2 (2019-01-08) ##
+
+### Bug fixes ###
+
+- Serialize date-time attributes provided to Celery mock.
+- Avoid warning when providing regex as add_get_response and add_post_response parameter.
+
 ## Version 4.8.1 (2018-12-20) ##
 
 ### Bug fixes ###

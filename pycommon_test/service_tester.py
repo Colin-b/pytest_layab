@@ -3,6 +3,7 @@ import json
 import logging
 import os.path
 import sys
+import re
 from typing import List, Dict, Union
 
 import responses
@@ -12,15 +13,15 @@ os.environ['SERVER_ENVIRONMENT'] = 'test'  # Ensure that test configuration will
 logger = logging.getLogger(__name__)
 
 
-def add_get_response(url: str, data=None, file_path: str=None, status=200, **kwargs):
+def add_get_response(url: Union[str, re._pattern_type], data=None, file_path: str=None, status=200, **kwargs):
     _add_response(responses.GET, url, data, file_path, status, **kwargs)
 
 
-def add_post_response(url: str, data=None, file_path: str=None, status=200, **kwargs):
+def add_post_response(url: Union[str, re._pattern_type], data=None, file_path: str=None, status=200, **kwargs):
     _add_response(responses.POST, url, data, file_path, status, **kwargs)
 
 
-def _add_response(method, url: str, data=None, file_path: str=None, status=200, **kwargs):
+def _add_response(method, url: Union[str, re._pattern_type], data=None, file_path: str=None, status=200, **kwargs):
     if file_path:
         with open(file_path, 'rb') as file:
             kwargs['body'] = file.read()
