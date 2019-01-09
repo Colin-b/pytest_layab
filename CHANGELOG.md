@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 4.9.0 (2019-01-09) ##
+
+### Enhancements ###
+
+- Add a new mock for ldap3.
+
 ## Version 4.8.2 (2019-01-08) ##
 
 ### Bug fixes ###
