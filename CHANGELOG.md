@@ -6,6 +6,26 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 4.9.0 (2019-01-09) ##
+
+### Enhancements ###
+
+- Add a new mock for ldap3.
+- Update responses to latest version (0.10.5)
+
+## Version 4.8.2 (2019-01-08) ##
+
+### Bug fixes ###
+
+- Serialize date-time attributes provided to Celery mock.
+- Avoid warning when providing regex as add_get_response and add_post_response parameter.
+
+## Version 4.8.1 (2018-12-20) ##
+
+### Bug fixes ###
+
+- Manage services returning empty list or dict.
+
 ## Version 4.8.0 (2018-12-18) ##
 
 ### Enhancements ###

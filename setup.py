@@ -10,7 +10,7 @@ setup(
         # Used to manage testing of Flask RestPlus components
         'flask-restplus==0.12.1',
         # Used to mock API responses
-        'responses==0.10.4',
+        'responses==0.10.5',
         # Used to run tests
         'nose==1.3.7',
         # Used to check code coverage

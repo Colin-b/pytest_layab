@@ -10,6 +10,8 @@ This test case:
  * Log start and end of test.
  * Provides overridable methods to fill and clear database between each test.
  * Provides various assertion methods (in addition to [http://flask.pocoo.org/docs/1.0/testing/]).
+ * Mock celery if needed (automatically).
+ * Handle Asynchronous REST workflow automatically.
 
 ```python
 from pycommon_test.service_tester import JSONTestCase
@@ -227,4 +229,38 @@ class ServerTest(JSONTestCase):
     @responses.activate
     def test_sent_text_exact_content(self):
         self.assert_received_text('/called_endpoint', 'Expected 13 value')
+```
+
+## Mocks ##
+
+### ADAM (Security Central) ###
+
+You can mock ADAM rest API calls (useful when you use adamhelper python module).
+
+```python
+from pycommon_test import AdamMock, mock_user_groups
+```
+
+### Date-Time ###
+
+You can mock current date-time.
+
+```python
+from pycommon_test import mock_now, revert_now
+```
+
+### LDAP3 ###
+
+You can mock ldap3 python module.
+
+```python
+from pycommon_test.ldap_mock import LDAP3ConnectionMock
+```
+
+### Samba (Linux - Windows) ###
+
+You can mock pysmb python module.
+
+```python
+from pycommon_test.samba_mock import TestConnection
 ```
