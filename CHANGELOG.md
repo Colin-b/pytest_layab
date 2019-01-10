@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 4.10.0 (2019-01-10) ##
+
+### Enhancements ###
+
+- Allow LDAP3 mock to send errors in case search is called.
+
 ## Version 4.9.0 (2019-01-09) ##
 
 ### Enhancements ###
