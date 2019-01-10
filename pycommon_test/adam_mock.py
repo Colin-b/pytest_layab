@@ -1,3 +1,4 @@
+from typing import Tuple
 import responses
 
 
@@ -14,7 +15,33 @@ class AdamMock:
         """
         self.server_uri = uri
 
-    def set_user_groups(self, user: str, *groups) -> 'AdamMock':
+    def set_application_groups(self, application: str, *groups: Tuple[str, str]) -> 'AdamMock':
+        """
+        Mock application groups.
+        Note that you need to decorate your test case with @responses.activate
+
+        :param application: start of the group name.
+        :param groups: groups with identifier and description
+        """
+        already_mocked = [m for m in responses.mock._matches if m.url == f'{self.server_uri}/groups?name={application}.*']
+        if already_mocked:
+            responses.replace(
+                url=f'{self.server_uri}/groups?name={application}.*',
+                method_or_response=responses.GET,
+                status=200,
+                json=[{'cn': name, 'description': description} for name, description in groups]
+            )
+        else:
+            responses.add(
+                url=f'{self.server_uri}/groups?name={application}.*',
+                method=responses.GET,
+                status=200,
+                json=[{'cn': name, 'description': description} for name, description in groups]
+            )
+
+        return self
+
+    def set_user_groups(self, user: str, *groups: str) -> 'AdamMock':
         """
         Mock user groups.
         Note that you need to decorate your test case with @responses.activate
