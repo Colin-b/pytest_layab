@@ -11,6 +11,7 @@ List all changes in various categories:
 ### Enhancements ###
 
 - Allow LDAP3 mock to send errors in case search is called.
+- Allow ADAM mock to mock application groups.
 
 ## Version 4.9.0 (2019-01-09) ##
 
