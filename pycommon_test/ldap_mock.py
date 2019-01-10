@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 
 
 class LDAP3ConnectionMock:
@@ -16,12 +16,17 @@ class LDAP3ConnectionMock:
     def search(self, search_base: str, search_filter: str, attributes: List[str]):
         all_results = self.results.get((search_base, search_filter))
         if not all_results:
-            raise Exception()  # TODO Raise a proper LDAP3 Exception here
+            raise Exception('Unexpected call. You need to mock this call.')
 
-        self.entries = self._to_results(all_results.pop(0), attributes)
+        result = all_results.pop(0)
+
+        if result and len(result) == 1 and isinstance(result[0], Exception):
+            raise result[0]
+
+        self.entries = self._to_results(result, attributes)
 
     @classmethod
-    def add_search_result(cls, search_base: str, search_filter: str, *results):
+    def add_search_result(cls, search_base: str, search_filter: str, *results: Union[Exception, dict]):
         cls.results.setdefault((search_base, search_filter), []).append(results)
 
     @classmethod
