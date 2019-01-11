@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 4.10.1 (2019-01-11) ##
+
+### Bug fixes ###
+
+- ADAM mock now simulate the new adamrest health response (standard health).
+
 ## Version 4.10.0 (2019-01-10) ##
 
 ### Enhancements ###
