@@ -77,15 +77,15 @@ class AdamMock:
             responses.replace(
                 url=f'{self.server_uri}/health',
                 method_or_response=responses.GET,
-                status=500,
-                body="Internal server error"
+                status=400,
+                json={'status': 'fail'}
             )
         else:
             responses.add(
                 url=f'{self.server_uri}/health',
                 method=responses.GET,
-                status=500,
-                body="Internal server error"
+                status=400,
+                json={'status': 'fail'}
             )
 
         return self
@@ -101,14 +101,14 @@ class AdamMock:
                 url=f'{self.server_uri}/health',
                 method_or_response=responses.GET,
                 status=200,
-                body="service is ok"
+                json={'status': 'pass'}
             )
         else:
             responses.add(
                 url=f'{self.server_uri}/health',
                 method=responses.GET,
                 status=200,
-                body="service is ok"
+                json={'status': 'pass'}
             )
 
         return self
