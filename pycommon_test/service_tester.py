@@ -226,7 +226,7 @@ class JSONTestCase(TestCase):
     def received_text(self, url: str):
         return _to_text(self.received_bytes(url))
 
-    def received_bytes(self, url: str) -> bytes:
+    def received_bytes(self, url: str) -> Union[bytes, str]:
         actual_request = _get_request(url)
         if not actual_request:
             self.fail(f'{url} was never called.')
@@ -234,9 +234,9 @@ class JSONTestCase(TestCase):
         return actual_request.body
 
     def assert_received_form(self, url: str, expected_form: Dict[str, Union[bytes, str, List[Union[bytes, str]]]]):
-        return self.assertEqual(expected_form, self.received_form(url))
+        self.assertEqual(expected_form, self.received_form(url))
 
-    def assert_received_json(self, url: str, expected):
+    def assert_received_json(self, url: str, expected: Union[dict, list]):
         actual = self.received_json(url)
         if isinstance(actual, list):  # List order does not matter in JSON
             self.assertCountEqual(expected, actual)
@@ -244,7 +244,10 @@ class JSONTestCase(TestCase):
             self.assertEqual(expected, actual)
 
     def assert_received_text(self, url: str, expected: str):
-        return self.assertEqual(expected, self.received_text(url))
+        self.assertEqual(expected, self.received_text(url))
+
+    def assert_received_text_regex(self, url: str, expected: str):
+        self.assertRegex(self.received_text(url), expected)
 
     def assert_swagger(self, response, expected):
         """
@@ -403,8 +406,8 @@ def _to_form(body: bytes) -> Dict[str, Union[bytes, str, List[Union[bytes, str]]
     }
 
 
-def _to_text(body: bytes) -> str:
-    return body.decode('utf-8')
+def _to_text(body: Union[bytes, str]) -> str:
+    return body if isinstance(body, str) else body.decode('utf-8')
 
 
 def _to_json(body: bytes):

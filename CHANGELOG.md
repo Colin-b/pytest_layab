@@ -6,6 +6,16 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 4.11.0 (2019-01-14) ##
+
+### Enhancements ###
+
+- JSONTestCase now provides assert_received_text_regex method.
+
+### Bug fixes ###
+
+- str body can now be compared to text (it was assumed as bytes).
+
 ## Version 4.10.1 (2019-01-11) ##
 
 ### Bug fixes ###

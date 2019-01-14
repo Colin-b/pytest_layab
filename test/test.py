@@ -157,6 +157,58 @@ class ServiceTesterMock(service_tester.JSONTestCase):
         self.assert_202_regex(response, 'http://test')
         self.assert_json(response, {'test': 'test value'})
 
+    @responses.activate
+    def test_assert_received_json(self):
+        service_tester.add_post_response('http://test/post', {})
+        requests.post('http://test/post', json={'key': 'value'})
+        self.assert_received_json('http://test/post', {'key': 'value'})
+
+    @responses.activate
+    def test_assert_received_json_failure(self):
+        service_tester.add_post_response('http://test/post', {})
+        requests.post('http://test/post', json={'key': 'value'})
+        with self.assertRaises(Exception):
+            self.assert_received_json('http://test/post', {'key': 'wrong value'})
+
+    @responses.activate
+    def test_assert_received_text(self):
+        service_tester.add_post_response('http://test/post', {})
+        requests.post('http://test/post', 'this is text')
+        self.assert_received_text('http://test/post', 'this is text')
+
+    @responses.activate
+    def test_assert_received_text_failure(self):
+        service_tester.add_post_response('http://test/post', {})
+        requests.post('http://test/post', 'this is text')
+        with self.assertRaises(Exception):
+            self.assert_received_text('http://test/post', 'this is not text')
+
+    @responses.activate
+    def test_assert_received_text_regex(self):
+        service_tester.add_post_response('http://test/post', {})
+        requests.post('http://test/post', 'this is 5 text')
+        self.assert_received_text_regex('http://test/post', 'this is \d text')
+
+    @responses.activate
+    def test_assert_received_bytes_text_regex(self):
+        service_tester.add_post_response('http://test/post', {})
+        requests.post('http://test/post', b'this is 5 text')
+        self.assert_received_text_regex('http://test/post', 'this is \d text')
+
+    @responses.activate
+    def test_assert_received_text_regex_failure(self):
+        service_tester.add_post_response('http://test/post', {})
+        requests.post('http://test/post', 'this is 55 text')
+        with self.assertRaises(Exception):
+            self.assert_received_text_regex('http://test/post', 'this is \d text')
+
+    @responses.activate
+    def test_assert_received_bytes_text_regex_failure(self):
+        service_tester.add_post_response('http://test/post', {})
+        requests.post('http://test/post', b'this is 55 text')
+        with self.assertRaises(Exception):
+            self.assert_received_text_regex('http://test/post', 'this is \d text')
+
     def test_post_file_without_handle_202(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_file_path = os.path.join(temp_dir, 'test_file')
