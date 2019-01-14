@@ -236,18 +236,21 @@ class JSONTestCase(TestCase):
             expected_headers = {'Content-Type': 'text/plain'}
         return _to_text(self._received_bytes(url, expected_headers))
 
-    def _received_bytes(self, url: str, expected_headers: Dict[str, str]) -> Union[bytes, str]:
+    def _received_bytes(self, url: str, expected_headers: Dict[str, Union[str, re._pattern_type]]) -> Union[bytes, str]:
         actual_request = _get_request(url)
         if not actual_request:
             self.fail(f'{url} was never called.')
 
         for expected_header_name, expected_header_value in expected_headers.items():
-            self.assertEqual(expected_header_value, actual_request.headers.get(expected_header_name))
+            if isinstance(expected_header_value, re._pattern_type):
+                self.assertRegex(actual_request.headers.get(expected_header_name), expected_header_value.pattern)
+            else:
+                self.assertEqual(expected_header_value, actual_request.headers.get(expected_header_name))
         return actual_request.body
 
     def assert_received_form(self, url: str,
                              expected_form: Dict[str, Union[bytes, str, List[Union[bytes, str]]]],
-                             expected_headers: Dict[str, str] = None):
+                             expected_headers: Dict[str, Union[str, re._pattern_type]] = None):
         self.assertEqual(expected_form, self.received_form(url, expected_headers))
 
     def assert_received_json(self, url: str, expected: Union[dict, list], expected_headers: Dict[str, str]=None):
