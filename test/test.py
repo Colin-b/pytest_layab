@@ -164,6 +164,19 @@ class ServiceTesterMock(service_tester.JSONTestCase):
         self.assert_received_json('http://test/post', {'key': 'value'})
 
     @responses.activate
+    def test_assert_received_json_headers(self):
+        service_tester.add_post_response('http://test/post', {})
+        requests.post('http://test/post', json={'key': 'value'}, headers={'X-Test': 'Test'})
+        self.assert_received_json('http://test/post', {'key': 'value'}, {'X-Test': 'Test'})
+
+    @responses.activate
+    def test_assert_received_json_headers_failure(self):
+        service_tester.add_post_response('http://test/post', {})
+        requests.post('http://test/post', json={'key': 'value'}, headers={'X-Test': 'Test'})
+        with self.assertRaises(Exception):
+            self.assert_received_json('http://test/post', {'key': 'value'}, {'X-Test': 'Failing Test'})
+
+    @responses.activate
     def test_assert_received_json_failure(self):
         service_tester.add_post_response('http://test/post', {})
         requests.post('http://test/post', json={'key': 'value'})
@@ -173,39 +186,65 @@ class ServiceTesterMock(service_tester.JSONTestCase):
     @responses.activate
     def test_assert_received_text(self):
         service_tester.add_post_response('http://test/post', {})
-        requests.post('http://test/post', 'this is text')
+        requests.post('http://test/post', 'this is text', headers={'Content-Type': 'text/plain'})
         self.assert_received_text('http://test/post', 'this is text')
+
+    @responses.activate
+    def test_assert_received_text_headers(self):
+        service_tester.add_post_response('http://test/post', {})
+        requests.post('http://test/post', 'this is text', headers={'Content-Type': 'text/csv'})
+        self.assert_received_text('http://test/post', 'this is text', {'Content-Type': 'text/csv'})
+
+    @responses.activate
+    def test_assert_received_text_headers_failure(self):
+        service_tester.add_post_response('http://test/post', {})
+        requests.post('http://test/post', 'this is text', headers={'Content-Type': 'text/csv'})
+        with self.assertRaises(Exception):
+            self.assert_received_text('http://test/post', 'this is text', {'Content-Type': 'text/csv2'})
 
     @responses.activate
     def test_assert_received_text_failure(self):
         service_tester.add_post_response('http://test/post', {})
-        requests.post('http://test/post', 'this is text')
+        requests.post('http://test/post', 'this is text', headers={'Content-Type': 'text/plain'})
         with self.assertRaises(Exception):
             self.assert_received_text('http://test/post', 'this is not text')
 
     @responses.activate
     def test_assert_received_text_regex(self):
         service_tester.add_post_response('http://test/post', {})
-        requests.post('http://test/post', 'this is 5 text')
+        requests.post('http://test/post', 'this is 5 text', headers={'Content-Type': 'text/plain'})
         self.assert_received_text_regex('http://test/post', 'this is \d text')
+
+    @responses.activate
+    def test_assert_received_text_regex_headers(self):
+        service_tester.add_post_response('http://test/post', {})
+        requests.post('http://test/post', 'this is 5 text', headers={'Content-Type': 'text/csv'})
+        self.assert_received_text_regex('http://test/post', 'this is \d text', {'Content-Type': 'text/csv'})
+
+    @responses.activate
+    def test_assert_received_text_regex_headers_failure(self):
+        service_tester.add_post_response('http://test/post', {})
+        requests.post('http://test/post', 'this is 5 text', headers={'Content-Type': 'text/csv'})
+        with self.assertRaises(Exception):
+            self.assert_received_text_regex('http://test/post', 'this is \d text', {'Content-Type': 'text/csv2'})
 
     @responses.activate
     def test_assert_received_bytes_text_regex(self):
         service_tester.add_post_response('http://test/post', {})
-        requests.post('http://test/post', b'this is 5 text')
+        requests.post('http://test/post', b'this is 5 text', headers={'Content-Type': 'text/plain'})
         self.assert_received_text_regex('http://test/post', 'this is \d text')
 
     @responses.activate
     def test_assert_received_text_regex_failure(self):
         service_tester.add_post_response('http://test/post', {})
-        requests.post('http://test/post', 'this is 55 text')
+        requests.post('http://test/post', 'this is 55 text', headers={'Content-Type': 'text/plain'})
         with self.assertRaises(Exception):
             self.assert_received_text_regex('http://test/post', 'this is \d text')
 
     @responses.activate
     def test_assert_received_bytes_text_regex_failure(self):
         service_tester.add_post_response('http://test/post', {})
-        requests.post('http://test/post', b'this is 55 text')
+        requests.post('http://test/post', b'this is 55 text', headers={'Content-Type': 'text/plain'})
         with self.assertRaises(Exception):
             self.assert_received_text_regex('http://test/post', 'this is \d text')
 
