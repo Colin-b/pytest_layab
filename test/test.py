@@ -157,6 +157,213 @@ class ServiceTesterMock(service_tester.JSONTestCase):
         self.assert_202_regex(response, 'http://test')
         self.assert_json(response, {'test': 'test value'})
 
+    @responses.activate
+    def test_assert_received_json(self):
+        service_tester.add_post_response('http://test/post', {})
+        requests.post('http://test/post', json={'key': 'value'})
+        self.assert_received_json('http://test/post', {'key': 'value'})
+
+    @responses.activate
+    def test_received_form(self):
+        service_tester.add_post_response('http://test/post', {})
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_file_path = os.path.join(temp_dir, 'test_file')
+            with open(temp_file_path, 'wt') as test_file:
+                test_file.write('This is the content of the file')
+
+            with open(temp_file_path, 'rb') as file:
+                requests.post('http://test/post', data={'key': 'value'}, files={'file1': file.read()})
+
+        form = self.received_form('http://test/post',
+                                  expected_headers={'Content-Type': re.compile('multipart/form-data; boundary=.*')})
+        self.assertEqual(form['key'], 'value')
+        self.assertEqual(form['file1'], 'This is the content of the file')
+        self.assertEqual(len(form), 2)
+
+    @responses.activate
+    def test_assert_received_form(self):
+        service_tester.add_post_response('http://test/post', {})
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_file_path = os.path.join(temp_dir, 'test_file')
+            with open(temp_file_path, 'wt') as test_file:
+                test_file.write('This is the content of the file')
+
+            with open(temp_file_path, 'rb') as file:
+                requests.post('http://test/post', data={'key': 'value'}, files={'file1': file.read()})
+
+        self.assert_received_form('http://test/post', {'key': 'value', 'file1': 'This is the content of the file'},
+                                  expected_headers={'Content-Type': re.compile('multipart/form-data; boundary=.*')})
+
+    @responses.activate
+    def test_assert_received_form_invalid_header_regex(self):
+        service_tester.add_post_response('http://test/post', {})
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_file_path = os.path.join(temp_dir, 'test_file')
+            with open(temp_file_path, 'wt') as test_file:
+                test_file.write('This is the content of the file')
+
+            with open(temp_file_path, 'rb') as file:
+                requests.post('http://test/post', data={'key': 'value'}, files={'file1': file.read()})
+
+        with self.assertRaises(Exception):
+            self.assert_received_form('http://test/post', {'key': 'value', 'file1': 'This is the content of the file'},
+                                      expected_headers={'Content-Type': re.compile('multipart/form-data; boundary2=.*')})
+
+    @responses.activate
+    def test_assert_received_form_failure_wrong_value(self):
+        service_tester.add_post_response('http://test/post', {})
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_file_path = os.path.join(temp_dir, 'test_file')
+            with open(temp_file_path, 'wt') as test_file:
+                test_file.write('This is the content of the file')
+
+            with open(temp_file_path, 'rb') as file:
+                requests.post('http://test/post', data={'key': 'value'}, files={'file1': file.read()})
+
+        with self.assertRaises(Exception):
+            self.assert_received_form('http://test/post', {'wrong key': 'value', 'file1': 'This is the content of the file'},
+                                      expected_headers={'Content-Type': re.compile('multipart/form-data; boundary=.*')})
+
+    @responses.activate
+    def test_assert_received_form_failure_unexpected_value(self):
+        service_tester.add_post_response('http://test/post', {})
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_file_path = os.path.join(temp_dir, 'test_file')
+            with open(temp_file_path, 'wt') as test_file:
+                test_file.write('This is the content of the file')
+
+            with open(temp_file_path, 'rb') as file:
+                requests.post('http://test/post', data={'key': 'value'}, files={'file1': file.read()})
+
+        with self.assertRaises(Exception):
+            self.assert_received_form('http://test/post',
+                                      {'unknown key': 'value', 'key': 'value', 'file1': 'This is the content of the file'},
+                                      expected_headers={'Content-Type': re.compile('multipart/form-data; boundary=.*')})
+
+    @responses.activate
+    def test_assert_received_form_failure_wrong_value(self):
+        service_tester.add_post_response('http://test/post', {})
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_file_path = os.path.join(temp_dir, 'test_file')
+            with open(temp_file_path, 'wt') as test_file:
+                test_file.write('This is the content of the file')
+
+            with open(temp_file_path, 'rb') as file:
+                requests.post('http://test/post', data={'key': 'value'}, files={'file1': file.read()})
+
+        with self.assertRaises(Exception):
+            self.assert_received_form('http://test/post',
+                                      {'key': 'wrong value', 'file1': 'This is the content of the file'},
+                                      expected_headers={'Content-Type': re.compile('multipart/form-data; boundary=.*')})
+
+    @responses.activate
+    def test_assert_received_form_failure_missing_value(self):
+        service_tester.add_post_response('http://test/post', {})
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_file_path = os.path.join(temp_dir, 'test_file')
+            with open(temp_file_path, 'wt') as test_file:
+                test_file.write('This is the content of the file')
+
+            with open(temp_file_path, 'rb') as file:
+                requests.post('http://test/post', data={'key': 'value'}, files={'file1': file.read()})
+
+        with self.assertRaises(Exception):
+            self.assert_received_form('http://test/post',
+                                      {'file1': 'This is the content of the file'},
+                                      expected_headers={'Content-Type': re.compile('multipart/form-data; boundary=.*')})
+
+    @responses.activate
+    def test_assert_received_json_headers(self):
+        service_tester.add_post_response('http://test/post', {})
+        requests.post('http://test/post', json={'key': 'value'}, headers={'X-Test': 'Test'})
+        self.assert_received_json('http://test/post', {'key': 'value'}, {'X-Test': 'Test'})
+
+    @responses.activate
+    def test_assert_received_json_headers_failure(self):
+        service_tester.add_post_response('http://test/post', {})
+        requests.post('http://test/post', json={'key': 'value'}, headers={'X-Test': 'Test'})
+        with self.assertRaises(Exception):
+            self.assert_received_json('http://test/post', {'key': 'value'}, {'X-Test': 'Failing Test'})
+
+    @responses.activate
+    def test_assert_received_json_failure(self):
+        service_tester.add_post_response('http://test/post', {})
+        requests.post('http://test/post', json={'key': 'value'})
+        with self.assertRaises(Exception):
+            self.assert_received_json('http://test/post', {'key': 'wrong value'})
+
+    @responses.activate
+    def test_assert_received_text(self):
+        service_tester.add_post_response('http://test/post', {})
+        requests.post('http://test/post', 'this is text', headers={'Content-Type': 'text/plain'})
+        self.assert_received_text('http://test/post', 'this is text')
+
+    @responses.activate
+    def test_assert_received_text_headers(self):
+        service_tester.add_post_response('http://test/post', {})
+        requests.post('http://test/post', 'this is text', headers={'Content-Type': 'text/csv'})
+        self.assert_received_text('http://test/post', 'this is text', {'Content-Type': 'text/csv'})
+
+    @responses.activate
+    def test_assert_received_text_headers_failure(self):
+        service_tester.add_post_response('http://test/post', {})
+        requests.post('http://test/post', 'this is text', headers={'Content-Type': 'text/csv'})
+        with self.assertRaises(Exception):
+            self.assert_received_text('http://test/post', 'this is text', {'Content-Type': 'text/csv2'})
+
+    @responses.activate
+    def test_assert_received_text_failure(self):
+        service_tester.add_post_response('http://test/post', {})
+        requests.post('http://test/post', 'this is text', headers={'Content-Type': 'text/plain'})
+        with self.assertRaises(Exception):
+            self.assert_received_text('http://test/post', 'this is not text')
+
+    @responses.activate
+    def test_assert_received_text_regex(self):
+        service_tester.add_post_response('http://test/post', {})
+        requests.post('http://test/post', 'this is 5 text', headers={'Content-Type': 'text/plain'})
+        self.assert_received_text_regex('http://test/post', 'this is \d text')
+
+    @responses.activate
+    def test_assert_received_text_regex_headers(self):
+        service_tester.add_post_response('http://test/post', {})
+        requests.post('http://test/post', 'this is 5 text', headers={'Content-Type': 'text/csv'})
+        self.assert_received_text_regex('http://test/post', 'this is \d text', {'Content-Type': 'text/csv'})
+
+    @responses.activate
+    def test_assert_received_text_regex_headers_failure(self):
+        service_tester.add_post_response('http://test/post', {})
+        requests.post('http://test/post', 'this is 5 text', headers={'Content-Type': 'text/csv'})
+        with self.assertRaises(Exception):
+            self.assert_received_text_regex('http://test/post', 'this is \d text', {'Content-Type': 'text/csv2'})
+
+    @responses.activate
+    def test_assert_received_bytes_text_regex(self):
+        service_tester.add_post_response('http://test/post', {})
+        requests.post('http://test/post', b'this is 5 text', headers={'Content-Type': 'text/plain'})
+        self.assert_received_text_regex('http://test/post', 'this is \d text')
+
+    @responses.activate
+    def test_assert_received_text_regex_failure(self):
+        service_tester.add_post_response('http://test/post', {})
+        requests.post('http://test/post', 'this is 55 text', headers={'Content-Type': 'text/plain'})
+        with self.assertRaises(Exception):
+            self.assert_received_text_regex('http://test/post', 'this is \d text')
+
+    @responses.activate
+    def test_assert_received_bytes_text_regex_failure(self):
+        service_tester.add_post_response('http://test/post', {})
+        requests.post('http://test/post', b'this is 55 text', headers={'Content-Type': 'text/plain'})
+        with self.assertRaises(Exception):
+            self.assert_received_text_regex('http://test/post', 'this is \d text')
+
     def test_post_file_without_handle_202(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_file_path = os.path.join(temp_dir, 'test_file')

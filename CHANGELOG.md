@@ -6,6 +6,24 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 5.0.0 (2019-01-14) ##
+
+### Release notes ###
+
+- JSONTestCase.assert_received_* now expect a specific Content-Type (can be overridden).
+- JSONTestCase.received_json should not be used anymore (use related assert_* instead).
+- JSONTestCase.received_text should not be used anymore (use related assert_* instead).
+- JSONTestCase.received_bytes should not be used anymore (use related assert_* instead).
+
+### Enhancements ###
+
+- JSONTestCase now provides assert_received_text_regex method.
+- JSONTestCase.assert_received_* now allow to check headers.
+
+### Bug fixes ###
+
+- str body can now be compared to text (it was assumed as bytes).
+
 ## Version 4.10.1 (2019-01-11) ##
 
 ### Bug fixes ###

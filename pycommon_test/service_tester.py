@@ -217,34 +217,54 @@ class JSONTestCase(TestCase):
         with open(expected_file_path, 'rb') as expected_file:
             self.assertEqual(expected_file.read(), response.data)
 
-    def received_form(self, url: str) -> Dict[str, Union[bytes, str, List[Union[bytes, str]]]]:
-        return _to_form(self.received_bytes(url))
+    def received_form(self, url: str, expected_headers: Dict[str, str]=None) -> Dict[str, Union[bytes, str, List[Union[bytes, str]]]]:
+        """
+        Return received form on this URL so that this content can potentially be decoded before assertion.
+        In case of a GZIP file for example.
+        """
+        if not expected_headers:
+            expected_headers = {'Content-Type': 'application/x-www-form-urlencoded '}
+        return _to_form(self._received_bytes(url, expected_headers))
 
-    def received_json(self, url: str):
-        return _to_json(self.received_bytes(url))
+    def _received_json(self, url: str, expected_headers: Dict[str, str]):
+        if not expected_headers:
+            expected_headers = {'Content-Type': 'application/json'}
+        return _to_json(self._received_bytes(url, expected_headers))
 
-    def received_text(self, url: str):
-        return _to_text(self.received_bytes(url))
+    def _received_text(self, url: str, expected_headers: Dict[str, str]):
+        if not expected_headers:
+            expected_headers = {'Content-Type': 'text/plain'}
+        return _to_text(self._received_bytes(url, expected_headers))
 
-    def received_bytes(self, url: str) -> bytes:
+    def _received_bytes(self, url: str, expected_headers: Dict[str, Union[str, re._pattern_type]]) -> Union[bytes, str]:
         actual_request = _get_request(url)
         if not actual_request:
             self.fail(f'{url} was never called.')
 
+        for expected_header_name, expected_header_value in expected_headers.items():
+            if isinstance(expected_header_value, re._pattern_type):
+                self.assertRegex(actual_request.headers.get(expected_header_name), expected_header_value.pattern)
+            else:
+                self.assertEqual(expected_header_value, actual_request.headers.get(expected_header_name))
         return actual_request.body
 
-    def assert_received_form(self, url: str, expected_form: Dict[str, Union[bytes, str, List[Union[bytes, str]]]]):
-        return self.assertEqual(expected_form, self.received_form(url))
+    def assert_received_form(self, url: str,
+                             expected_form: Dict[str, Union[bytes, str, List[Union[bytes, str]]]],
+                             expected_headers: Dict[str, Union[str, re._pattern_type]] = None):
+        self.assertEqual(expected_form, self.received_form(url, expected_headers))
 
-    def assert_received_json(self, url: str, expected):
-        actual = self.received_json(url)
+    def assert_received_json(self, url: str, expected: Union[dict, list], expected_headers: Dict[str, str]=None):
+        actual = self._received_json(url, expected_headers)
         if isinstance(actual, list):  # List order does not matter in JSON
             self.assertCountEqual(expected, actual)
         else:
             self.assertEqual(expected, actual)
 
-    def assert_received_text(self, url: str, expected: str):
-        return self.assertEqual(expected, self.received_text(url))
+    def assert_received_text(self, url: str, expected: str, expected_headers: Dict[str, str]=None):
+        self.assertEqual(expected, self._received_text(url, expected_headers))
+
+    def assert_received_text_regex(self, url: str, expected: str, expected_headers: Dict[str, str]=None):
+        self.assertRegex(self._received_text(url, expected_headers), expected)
 
     def assert_swagger(self, response, expected):
         """
@@ -403,8 +423,8 @@ def _to_form(body: bytes) -> Dict[str, Union[bytes, str, List[Union[bytes, str]]
     }
 
 
-def _to_text(body: bytes) -> str:
-    return body.decode('utf-8')
+def _to_text(body: Union[bytes, str]) -> str:
+    return body if isinstance(body, str) else body.decode('utf-8')
 
 
 def _to_json(body: bytes):
@@ -412,6 +432,7 @@ def _to_json(body: bytes):
 
 
 def _get_request(url: str):
+    """Returns the corresponding requests PreparedRequest."""
     for call in responses.calls:
         if call.request.url == url:
             responses.calls._calls.remove(call)  # Pop out verified request (to be able to check multiple requests)
