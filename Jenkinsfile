@@ -10,7 +10,7 @@ pipeline {
         label 'agent-team'
     }
     stages {
-        stage('build') {
+        stage('Build') {
             steps {
                 script {
                     if(BRANCH_NAME == "development") {
@@ -34,7 +34,7 @@ pipeline {
                 """
             }
         }
-        stage('deploy') {
+        stage('Deploy') {
             steps {
                 sh 'python3.6 -m venv testenv'
                 sh """ cat << EOF > .pypirc
