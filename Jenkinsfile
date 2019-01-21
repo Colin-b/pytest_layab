@@ -43,9 +43,11 @@ EOF
                 python3.6 -m pip install --upgrade pip
                 python3.6 -m pip install twine
                 python3.6 setup.py sdist
-                ls -alh
                 twine upload dist/* -r local --config-file ./.pypirc
                 """
+                publishers {
+                    archiveJunit('./test/*.xml')
+                }
             }
         }
     }
