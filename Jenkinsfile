@@ -43,7 +43,7 @@ EOF
                 . ./testenv/bin/activate
                 python3.6 -m pip install --upgrade pip
                 python3.6 setup.py sdist
-                twine upload dist/* -r dev --config-file .pypirc
+                twine upload dist/* -r local --config-file .pypirc
                 """
             }
         }
