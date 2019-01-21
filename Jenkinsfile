@@ -1,5 +1,5 @@
-project = "all"
-team = "team"
+project = "gem-py"
+team = "gem-py"
 
 pipeline {
      environment {
