@@ -22,7 +22,6 @@ pipeline {
                 cd test
                 nosetests . --exe --with-doctest --with-xunit --xunit-file python_unittest_out.xml --with-coverage --cover-erase --cover-package=../pycommon_test/. --cover-min-percentage=30 --cover-html
                 coverage xml
-                ls -alh
                 """
             }
         }
@@ -43,7 +42,8 @@ EOF
                 . ./testenv/bin/activate
                 python3.6 -m pip install --upgrade pip
                 python3.6 setup.py sdist
-                twine upload dist/* -r local --config-file .pypirc
+                ls -alh
+                twine upload dist/* -r local --config-file ./.pypirc
                 """
             }
         }
