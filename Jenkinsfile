@@ -4,7 +4,6 @@ team = "gem-py"
 pipeline {
      environment {
            ARTIFACTORY = credentials("${project}-${team}-artifactory")
-           // 3 environment variables will be automatically be defined: ARTIFACTORY (username:APIKey), ARTIFACTORY_USR (username) and ARTIFACTORY_PSW (APIKey)
      }
     agent {
         label 'agent-team'
