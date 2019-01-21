@@ -1,6 +1,6 @@
 project = "all"
 team = "team"
-environment="dev"
+shouldDeploy=false
 
 pipeline {
      environment {
@@ -13,6 +13,15 @@ pipeline {
     stages {
         stage('build') {
             steps {
+                if(BRANCH_NAME == "development"){
+                    environment = "dev"
+                }else if(BRANCH_NAME == "release") {
+                    environment = "uat"
+                }else if(BRANCH_NAME == "master") {
+                    environment = "prod"
+                }else{
+                    environment = "scratch"
+                }
                 sh 'python3.6 --version'
                 sh 'python3.6 -m venv testenv'
                 sh """
@@ -27,7 +36,6 @@ pipeline {
         }
         stage('deploy') {
             steps {
-                sh 'python3.6 --version'
                 sh 'python3.6 -m venv testenv'
                 sh """ cat << EOF > .pypirc
 [distutils]
@@ -45,9 +53,6 @@ EOF
                 python3.6 setup.py sdist
                 twine upload dist/* -r local --config-file ./.pypirc
                 """
-                publishers {
-                    archiveJunit('./test/*.xml')
-                }
             }
         }
     }
