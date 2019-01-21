@@ -1,11 +1,10 @@
 project = "all"
 team = "team"
-shouldDeploy=false
 
 pipeline {
      environment {
            ARTIFACTORY = credentials("${project}-${team}-artifactory")
-        // 3 environment variables will be automatically be defined: ARTIFACTORY (username:APIKey), ARTIFACTORY_USR (username) and ARTIFACTORY_PSW (APIKey)
+           // 3 environment variables will be automatically be defined: ARTIFACTORY (username:APIKey), ARTIFACTORY_USR (username) and ARTIFACTORY_PSW (APIKey)
      }
     agent {
         label 'agent-team'
@@ -14,7 +13,7 @@ pipeline {
         stage('build') {
             steps {
                 script {
-                    if(BRANCH_NAME == "development"){
+                    if(BRANCH_NAME == "development") {
                         environment = "dev"
                     }else if(BRANCH_NAME == "release") {
                         environment = "uat"
@@ -24,7 +23,6 @@ pipeline {
                         environment = "scratch"
                     }
                 }
-                sh 'python3.6 --version'
                 sh 'python3.6 -m venv testenv'
                 sh """
                 . ./testenv/bin/activate
