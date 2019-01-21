@@ -13,14 +13,16 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                if(BRANCH_NAME == "development"){
-                    environment = "dev"
-                }else if(BRANCH_NAME == "release") {
-                    environment = "uat"
-                }else if(BRANCH_NAME == "master") {
-                    environment = "prod"
-                }else{
-                    environment = "scratch"
+                script {
+                    if(BRANCH_NAME == "development"){
+                        environment = "dev"
+                    }else if(BRANCH_NAME == "release") {
+                        environment = "uat"
+                    }else if(BRANCH_NAME == "master") {
+                        environment = "prod"
+                    }else{
+                        environment = "scratch"
+                    }
                 }
                 sh 'python3.6 --version'
                 sh 'python3.6 -m venv testenv'
