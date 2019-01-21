@@ -20,8 +20,9 @@ pipeline {
                 python3.6 -m pip install --upgrade pip
                 python3.6 -m pip install -e .[testing] --index https://${ARTIFACTORY}@artifactory.tools.digital.engie.com/artifactory/api/pypi/${project}-${team}-pypi-${environment}/simple --upgrade
                 cd test
-                nosetests . --exe --with-doctest --with-xunit --xunit-file ../test-reports/python_unittest_out.xml --with-coverage --cover-erase --cover-package=../pycommon_test/. --cover-min-percentage=79 --cover-html
+                nosetests . --exe --with-doctest --with-xunit --xunit-file python_unittest_out.xml --with-coverage --cover-erase --cover-package=../pycommon_test/. --cover-min-percentage=79 --cover-html
                 coverage xml
+                ls -alh
                 """
             }
         }
