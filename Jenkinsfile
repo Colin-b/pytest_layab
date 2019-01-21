@@ -3,7 +3,7 @@ team = "gem-py"
 
 pipeline {
      environment {
-           ARTIFACTORY = credentials("${project}-${team}-artifactory")
+           ARTIFACTORY = credentials("all-team-artifactory")
      }
     agent {
         label 'agent-team'
