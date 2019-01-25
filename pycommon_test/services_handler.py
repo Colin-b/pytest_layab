@@ -11,11 +11,15 @@ def start_services(*services):
     del service_processes[:]
     for service in services:
         if len(service) < 2:
-            raise Exception('Each service should contains at least 2 parameters, the module and the port.')
-        p = multiprocessing.Process(target=service[0].start_server, args=tuple(service[1:]))
+            raise Exception(
+                "Each service should contains at least 2 parameters, the module and the port."
+            )
+        p = multiprocessing.Process(
+            target=service[0].start_server, args=tuple(service[1:])
+        )
         service_processes.append(p)
         p.start()
-        _wait_for_server_to_be_started('127.0.0.1', service[1])
+        _wait_for_server_to_be_started("127.0.0.1", service[1])
 
 
 def stop_services():
@@ -36,5 +40,5 @@ def _cannot_connect_to_server(sock, host, port):
 def _wait_for_server_to_be_started(host, port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     while _cannot_connect_to_server(sock, host, port):
-        logger.info('Server still not started...')
-    logger.info('Server is started')
+        logger.info("Server still not started...")
+    logger.info("Server is started")
