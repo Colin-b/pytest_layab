@@ -16,7 +16,7 @@ class LDAP3ConnectionMock:
     def search(self, search_base: str, search_filter: str, attributes: List[str]):
         all_results = self.results.get((search_base, search_filter))
         if not all_results:
-            raise Exception('Unexpected call. You need to mock this call.')
+            raise Exception("Unexpected call. You need to mock this call.")
 
         result = all_results.pop(0)
 
@@ -26,21 +26,21 @@ class LDAP3ConnectionMock:
         self.entries = self._to_results(result, attributes)
 
     @classmethod
-    def add_search_result(cls, search_base: str, search_filter: str, *results: Union[Exception, dict]):
+    def add_search_result(
+        cls, search_base: str, search_filter: str, *results: Union[Exception, dict]
+    ):
         cls.results.setdefault((search_base, search_filter), []).append(results)
 
     @classmethod
     def _to_results(cls, results: List[dict], attributes: List[str]):
-        return [
-            cls._to_result(result, attributes)
-            for result in results
-        ]
+        return [cls._to_result(result, attributes) for result in results]
 
     @classmethod
     def _to_result(cls, result: dict, attributes: List[str]):
         class Result:
             def __getattr__(self, item):
                 if item in attributes:
+
                     class Attribute:
                         value = result.get(item)
 
@@ -54,7 +54,7 @@ class LDAP3ConnectionMock:
         if cls.results:
             results = dict(cls.results)
             cls.results.clear()
-            raise Exception(f'Expected results were not retrieved: {results}')
+            raise Exception(f"Expected results were not retrieved: {results}")
 
 
 import ldap3
