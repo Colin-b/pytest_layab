@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 5.0.1 (2019-01-29) ##
+
+### Bug fixes ###
+
+- Celery mock now allows to call methods decorated as tasks.
+
 ## Version 5.0.0 (2019-01-14) ##
 
 ### Release notes ###
