@@ -19,7 +19,9 @@ setup(
     extras_require={
         "testing": [
             # Used to manage responses testing
-            "requests==2.21.0"
+            "requests==2.21.0",
+            # Used by Celery mock
+            "celery==4.2.1",
         ]
     },
 )
