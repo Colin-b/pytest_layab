@@ -5,7 +5,7 @@ import logging
 import datetime
 
 from celery import states
-from celery.result import EagerResult
+import celery.result
 
 logger = logging.getLogger("celery_mock")
 
@@ -24,20 +24,16 @@ def _serialize(value):
     return value
 
 
-def async_result_stub(task_id, **kargs):
+def async_result_stub(task_id, **kwargs):
     return TaskResultStore.get_by_id(task_id)
 
 
-## when you use celery in eager mode, when you call apply_async it returns an EagerResult (instead of AsyncResult).
-## In pycommon_server, we use AsyncResult. you cannot get an EagerResult from an AsyncResult.
-## With this line of code, any new AsyncResult for a given task id, will return an EagerResult where we can actually fetch the result
-## stored in AsyncTaskProxy
-import pycommon_server.celery_common
-
-pycommon_server.celery_common.celery_results.AsyncResult = async_result_stub
+# apply_async returns an EagerResult in eager mode.
+# To ensure it always returns an EagerResult even when AsyncResult is called, we use this mock
+celery.result.AsyncResult = async_result_stub
 
 
-class EagerResultWithStateSupport(EagerResult):
+class EagerResultWithStateSupport(celery.result.EagerResult):
     def ready(self):
         return self._state == states.READY_STATES
 
@@ -108,11 +104,14 @@ class TestCeleryAppProxy:
                             *serialized_args, **serialized_kwargs
                         )
                         task_id = task_id if task_id else str(uuid.uuid4())
-                        celery_result = EagerResult(
+                        celery_result = celery.result.EagerResult(
                             task_id, method_result, states.SUCCESS
                         )
                         TaskResultStore.put(celery_result)
                         return celery_result
+
+                    def __call__(self, *args, **kwargs):
+                        return self.__method(*args, **kwargs)
 
                 return AsyncTaskProxy
 
