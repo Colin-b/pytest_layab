@@ -5,9 +5,9 @@ import logging
 import datetime
 
 from celery import states
-from celery.result import EagerResult
+import celery.result
 
-logger = logging.getLogger('celery_mock')
+logger = logging.getLogger("celery_mock")
 
 
 def _serialize(value):
@@ -24,21 +24,16 @@ def _serialize(value):
     return value
 
 
-def async_result_stub(task_id, **kargs):
+def async_result_stub(task_id, **kwargs):
     return TaskResultStore.get_by_id(task_id)
 
 
-
-## when you use celery in eager mode, when you call apply_async it returns an EagerResult (instead of AsyncResult).
-## In pycommon_server, we use AsyncResult. you cannot get an EagerResult from an AsyncResult.
-## With this line of code, any new AsyncResult for a given task id, will return an EagerResult where we can actually fetch the result
-## stored in AsyncTaskProxy
-import pycommon_server.celery_common
-pycommon_server.celery_common.celery_results.AsyncResult = async_result_stub
+# apply_async returns an EagerResult in eager mode.
+# To ensure it always returns an EagerResult even when AsyncResult is called, we use this mock
+celery.result.AsyncResult = async_result_stub
 
 
-class EagerResultWithStateSupport(EagerResult):
-
+class EagerResultWithStateSupport(celery.result.EagerResult):
     def ready(self):
         return self._state == states.READY_STATES
 
@@ -53,7 +48,11 @@ class TaskResultStore:
 
     @classmethod
     def get_by_id(cls, id):
-        return cls.__task_store[id] if id in cls.__task_store else EagerResultWithStateSupport(id, None, states.PENDING )
+        return (
+            cls.__task_store[id]
+            if id in cls.__task_store
+            else EagerResultWithStateSupport(id, None, states.PENDING)
+        )
 
 
 class TestCeleryAppProxy:
@@ -64,28 +63,55 @@ class TestCeleryAppProxy:
 
     def __init__(self, celery_app):
         self.__celery_app = celery_app
-        self.__celery_app.conf.update(task_always_eager=True, result_backend='cache', cache_backend='memory',
-                                       task_eager_propagates=True)
+        self.__celery_app.conf.update(
+            task_always_eager=True,
+            result_backend="cache",
+            cache_backend="memory",
+            task_eager_propagates=True,
+        )
         self.__task_store = {}
 
     def __getattr__(self, name):
-        if name == 'task':
+        if name == "task":
+
             def task_interceptor(*aa, **oo):
-                result = getattr(self.__celery_app, 'task')(*aa, **oo)
+                result = getattr(self.__celery_app, "task")(*aa, **oo)
 
                 class AsyncTaskProxy:
                     def __init__(self, method, *a, **o):
                         self.__method = method
 
-                    def apply_async(self, args=None, kwargs=None, task_id=None, producer=None,
-                                    link=None, link_error=None, shadow=None, **options):
-                        serialized_args = [_serialize(arg) for arg in args] if args else ()
-                        serialized_kwargs = {name: _serialize(value) for name, value in kwargs.items()} if kwargs else {}
-                        method_result = self.__method(*serialized_args, **serialized_kwargs)
+                    def apply_async(
+                        self,
+                        args=None,
+                        kwargs=None,
+                        task_id=None,
+                        producer=None,
+                        link=None,
+                        link_error=None,
+                        shadow=None,
+                        **options
+                    ):
+                        serialized_args = (
+                            [_serialize(arg) for arg in args] if args else ()
+                        )
+                        serialized_kwargs = (
+                            {name: _serialize(value) for name, value in kwargs.items()}
+                            if kwargs
+                            else {}
+                        )
+                        method_result = self.__method(
+                            *serialized_args, **serialized_kwargs
+                        )
                         task_id = task_id if task_id else str(uuid.uuid4())
-                        celery_result = EagerResult(task_id, method_result, states.SUCCESS)
+                        celery_result = celery.result.EagerResult(
+                            task_id, method_result, states.SUCCESS
+                        )
                         TaskResultStore.put(celery_result)
                         return celery_result
+
+                    def __call__(self, *args, **kwargs):
+                        return self.__method(*args, **kwargs)
 
                 return AsyncTaskProxy
 

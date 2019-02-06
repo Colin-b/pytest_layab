@@ -15,13 +15,13 @@ class NowMock(datetime.datetime):
         return cls.date_time
 
 
-def mock_now(date_time: str='2018-10-11T15:05:05.663979') -> None:
+def mock_now(date_time: str = "2018-10-11T15:05:05.663979") -> None:
     """
     Mock datetime.datetime.now() and datetime.datetime.utcnow() functions.
 
     :param date_time: The datetime returned by datetime.datetime.now() and datetime.datetime.utcnow()
     """
-    NowMock.date_time = datetime.datetime.strptime(date_time, '%Y-%m-%dT%H:%M:%S.%f')
+    NowMock.date_time = datetime.datetime.strptime(date_time, "%Y-%m-%dT%H:%M:%S.%f")
     datetime.datetime = NowMock
 
 

@@ -1,4 +1,8 @@
-# Python Common Test Module #
+<h2 align="center">Python Common Test Module</h2>
+
+<p align="center">
+<a href="https://github.com/ambv/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
+</p>
 
 Provide helper and mocks to ease test cases writing.
 
@@ -264,3 +268,16 @@ You can mock pysmb python module.
 ```python
 from pycommon_test.samba_mock import TestConnection
 ```
+
+Contributing
+------------
+
+Everyone is free to contribute on this project.
+
+Before creating an issue please make sure that it was not already reported.
+
+Project follow "Black" code formatting: https://black.readthedocs.io/en/stable/
+
+To integrate it within Pycharm: https://black.readthedocs.io/en/stable/editor_integration.html#pycharm
+
+To add the pre-commit hook, after the installation run: **pre-commit install**
