@@ -14,7 +14,7 @@ pipeline {
                 script {
                     if(BRANCH_NAME == "development") {
                         environment = "dev"
-                    }else if(BRANCH_NAME == "release") {
+                    }else if(BRANCH_NAME == "acceptance") {
                         environment = "uat"
                     }else if(BRANCH_NAME == "master") {
                         environment = "prod"
@@ -28,7 +28,7 @@ pipeline {
                 python3.6 -m pip install --upgrade pip
                 python3.6 -m pip install -e .[testing] --index https://${ARTIFACTORY}@artifactory.tools.digital.engie.com/artifactory/api/pypi/${project}-${team}-pypi-${environment}/simple --upgrade
                 cd test
-                nosetests . --exe --with-doctest --with-xunit --xunit-file python_unittest_out.xml --with-coverage --cover-erase --cover-package=../pycommon_test/. --cover-min-percentage=30 --cover-html
+                nosetests . --exe --with-doctest --with-xunit --xunit-file python_unittest_out.xml --with-coverage --cover-erase --cover-package=../pycommon_test/. --cover-min-percentage=67 --cover-html
                 coverage xml
                 """
             }
