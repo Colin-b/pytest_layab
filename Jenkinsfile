@@ -50,8 +50,7 @@ EOF
                 python3.6 -m pip install --upgrade pip
                 python3.6 -m pip install twine
                 python3.6 setup.py sdist
-                echo ${ARTIFACTORY_USR}
-                echo ${ARTIFACTORY_PSW}
+                cat .pypirc
                 twine upload dist/* -r local --config-file ./.pypirc
                 """
             }
