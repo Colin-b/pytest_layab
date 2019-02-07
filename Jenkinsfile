@@ -24,15 +24,19 @@ pipeline {
                 }
                 sh """
                 python3.6 -m pip install -e .[testing] --index https://${ARTIFACTORY}@artifactory.tools.digital.engie.com/artifactory/api/pypi/${project}-${team}-pypi-${environment}/simple --upgrade
+                """
+            }
+        }
+        stage('Test') {
+            steps {
+                sh """
                 nosetests test --exe --with-doctest --with-xunit --xunit-file test-results.xml --with-coverage --cover-erase --cover-package=pycommon_test/. --cover-min-percentage=50 --cover-html
-                coverage xml -o cobertura.xml
-                ls -la *.xml
                 """
             }
         }
         stage('Publish test results') {
             steps {
-                junit '**/*.xml'
+                junit '**/test-results.xml'
             }
         }
         stage('Deploy') {
@@ -52,7 +56,14 @@ EOF
                 """
             }
         }
-        stage('Record Coverage') {
+        stage('Generate coverage') {
+            steps {
+                sh """
+                coverage xml -o cobertura.xml
+                """
+            }
+        }
+        stage('Record master coverage') {
             when { branch 'master' }
             steps {
                 script {
