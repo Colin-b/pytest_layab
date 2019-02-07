@@ -30,6 +30,9 @@ pipeline {
                 """
             }
         }
+        stage('Publish test results') {
+            junit '**/test/*.xml'
+        }
         stage('Deploy') {
             steps {
                 sh """ cat << EOF > .pypirc
