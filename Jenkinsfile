@@ -43,7 +43,10 @@ password=${ARTIFACTORY_PSW}
 EOF
 """
                 sh """
-                python3.6 -m pip install twine
+                where python
+                where python3
+                where python3.6
+                python3.6 -m pip install twine==1.12.1
                 python3.6 setup.py sdist
                 twine upload dist/* -r local --config-file ./.pypirc
                 """
