@@ -24,15 +24,14 @@ pipeline {
                 }
                 sh """
                 python3.6 -m pip install -e .[testing] --index https://${ARTIFACTORY}@artifactory.tools.digital.engie.com/artifactory/api/pypi/${project}-${team}-pypi-${environment}/simple --upgrade
-                cd test
-                nosetests . --exe --with-doctest --with-xunit --xunit-file python_unittest_out.xml --with-coverage --cover-erase --cover-package=../pycommon_test/. --cover-min-percentage=50 --cover-html
+                nosetests test --exe --with-doctest --with-xunit --xunit-file test-results.xml --with-coverage --cover-erase --cover-package=pycommon_test/. --cover-min-percentage=50 --cover-html
                 coverage xml
                 """
             }
         }
         stage('Publish test results') {
             steps {
-                junit '**/test/*.xml'
+                junit '**/*.xml'
             }
         }
         stage('Deploy') {
