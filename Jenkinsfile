@@ -23,7 +23,6 @@ pipeline {
                     }
                 }
                 sh """
-                python3.6 -m pip install --upgrade pip
                 python3.6 -m pip install -e .[testing] --index https://${ARTIFACTORY}@artifactory.tools.digital.engie.com/artifactory/api/pypi/${project}-${team}-pypi-${environment}/simple --upgrade
                 cd test
                 nosetests . --exe --with-doctest --with-xunit --xunit-file python_unittest_out.xml --with-coverage --cover-erase --cover-package=../pycommon_test/. --cover-min-percentage=50 --cover-html
@@ -43,10 +42,6 @@ password=${ARTIFACTORY_PSW}
 EOF
 """
                 sh """
-                whereis python
-                whereis python3
-                whereis python3.6
-                python3.6 -m pip install twine==1.12.1
                 python3.6 setup.py sdist
                 twine upload dist/* -r local --config-file ./.pypirc
                 """
