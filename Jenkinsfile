@@ -1,3 +1,3 @@
 @Library('jenkins-lib') _
 
-pythonBuildPipeline('gem-py', 'gem-py')
+gempipeline.pythonBuildPipeline('gem-py', 'gem-py')
