@@ -1,3 +1,3 @@
-@Library('jenkins-lib')
+@Library('jenkins-lib') _
 
-com.engie.drm.jenkinslib.pythonBuildPipeline('gem-py', 'gem-py')
+pythonBuildPipeline('gem-py', 'gem-py')
