@@ -24,6 +24,10 @@ setup(
             "requests==2.21.0",
             # Used by Celery mock
             "celery==4.2.1",
+            # Used by LDAP mock
+            "ldap3==2.5.2",
+            # Used by Samba mock
+            "pysmb==1.1.27",
         ]
     },
 )
