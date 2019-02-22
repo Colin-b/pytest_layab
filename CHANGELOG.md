@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 5.1.0 (2019-02-22) ##
+
+### Enhancements ###
+
+- Add pytest-cov 2.6.1 as dependency.
+
 ## Version 5.0.1 (2019-01-29) ##
 
 ### Bug fixes ###
