@@ -15,6 +15,8 @@ setup(
         "nose==1.3.7",
         # Used to check code coverage
         "coverage==4.5.2",
+        # Used to run tests and cover (Jenkins)
+        "pytest-cov==2.6.1",
     ],
     extras_require={
         "testing": [
@@ -22,6 +24,10 @@ setup(
             "requests==2.21.0",
             # Used by Celery mock
             "celery==4.2.1",
+            # Used by LDAP mock
+            "ldap3==2.5.2",
+            # Used by Samba mock
+            "pysmb==1.1.27",
         ]
     },
 )

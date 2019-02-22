@@ -1,3 +1,3 @@
 @Library('jenkins-lib') _
 
-pythonModulePipeline('pycommon_test', 50)
+pythonModulePipeline('pycommon_test', 59)
