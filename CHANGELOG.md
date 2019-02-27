@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 5.1.1 (2019-02-27) ##
+
+### Bug fixes ###
+
+- Celery mock manage exception raised inside celery task.
+
 ## Version 5.1.0 (2019-02-22) ##
 
 ### Enhancements ###
