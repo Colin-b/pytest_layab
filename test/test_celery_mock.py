@@ -39,8 +39,11 @@ class CeleryMockTest(service_tester.JSONTestCase):
 
         @app.route("/test_celery_async_with_exception")
         def test_celery_async_with_exception():
-            celery_task = method_with_exception.apply_async()
-            celery_result = celery.result.AsyncResult(celery_task.id, app=celery_app)
+            try:
+                celery_task = method_with_exception.apply_async()
+                celery_result = celery.result.AsyncResult(celery_task.id, app=celery_app)
+            except:
+                raise Exception('This exception should not be raised')
             return celery_result.get(propagate=True)
 
         app.testing = True
