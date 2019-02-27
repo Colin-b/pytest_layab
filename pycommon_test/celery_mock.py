@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import uuid
-import logging
 import datetime
+import logging
+import uuid
 
-from celery import states
 import celery.result
+from celery import states
 
 logger = logging.getLogger("celery_mock")
 
@@ -90,7 +90,7 @@ class TestCeleryAppProxy:
                         link=None,
                         link_error=None,
                         shadow=None,
-                        **options
+                        **options,
                     ):
                         serialized_args = (
                             [_serialize(arg) for arg in args] if args else ()
@@ -100,13 +100,21 @@ class TestCeleryAppProxy:
                             if kwargs
                             else {}
                         )
-                        method_result = self.__method(
-                            *serialized_args, **serialized_kwargs
-                        )
+
                         task_id = task_id if task_id else str(uuid.uuid4())
-                        celery_result = celery.result.EagerResult(
-                            task_id, method_result, states.SUCCESS
-                        )
+
+                        try:
+                            method_result = self.__method(
+                                *serialized_args, **serialized_kwargs
+                            )
+                            celery_result = celery.result.EagerResult(
+                                task_id, method_result, states.SUCCESS
+                            )
+                        except Exception as e:
+                            celery_result = celery.result.EagerResult(
+                                task_id, e, states.FAILURE
+                            )
+
                         TaskResultStore.put(celery_result)
                         return celery_result
 
