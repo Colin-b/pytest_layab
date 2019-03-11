@@ -6,6 +6,12 @@ List all changes in various categories:
 * Bug fixes
 * Known issues
 
+## Version 5.2.0 (2019-03-11) ##
+
+### Enhancements ###
+
+- Ability to assert excel file content in JSONTestCase.
+
 ## Version 5.1.1 (2019-02-27) ##
 
 ### Bug fixes ###

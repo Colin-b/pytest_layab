@@ -28,6 +28,8 @@ setup(
             "ldap3==2.5.2",
             # Used by Samba mock
             "pysmb==1.1.27",
+            # Used by Excel file testing
+            "xlrd==1.2.0",
         ]
     },
 )
