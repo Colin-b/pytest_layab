@@ -540,25 +540,33 @@ class ServiceTesterMock(service_tester.JSONTestCase):
         this_dir = os.path.abspath(os.path.dirname(__file__))
         with self.assertRaises(Exception) as cm:
             self.assert_excel_content(response.data, os.path.join(this_dir, "resources", "different_format.xlsx"))
-        self.assertEqual(str(cm.exception), "Different cell type in row 5, column 3. :: 3 != 2")
+        self.assertEqual(cm.exception.msg, "Different cell type in row 5, column 3.")
+        self.assertEqual(cm.exception.actual, "2")
+        self.assertEqual(cm.exception.expected, "3")
 
     def test_excel_file_response_with_different_format(self):
         response = self.get("/test_excel_file")
         this_dir = os.path.abspath(os.path.dirname(__file__))
         with self.assertRaises(Exception) as cm:
             self.assert_excel_file(response, os.path.join(this_dir, "resources", "different_format.xlsx"))
-        self.assertEqual(str(cm.exception), "Different cell type in row 5, column 3. :: 3 != 2")
+        self.assertEqual(cm.exception.msg, "Different cell type in row 5, column 3.")
+        self.assertEqual(cm.exception.actual, "2")
+        self.assertEqual(cm.exception.expected, "3")
 
     def test_excel_file_content_with_different_value(self):
         response = self.get("/test_excel_file")
         this_dir = os.path.abspath(os.path.dirname(__file__))
         with self.assertRaises(Exception) as cm:
             self.assert_excel_content(response.data, os.path.join(this_dir, "resources", "different_value.xlsx"))
-        self.assertEqual(str(cm.exception), "Different cell in row 5, column 1. :: 1.3 != 1.4")
+        self.assertEqual(cm.exception.msg, "Different cell in row 5, column 1.")
+        self.assertEqual(cm.exception.actual, "1.4")
+        self.assertEqual(cm.exception.expected, "1.3")
 
     def test_excel_file_response_with_different_value(self):
         response = self.get("/test_excel_file")
         this_dir = os.path.abspath(os.path.dirname(__file__))
         with self.assertRaises(Exception) as cm:
             self.assert_excel_file(response, os.path.join(this_dir, "resources", "different_value.xlsx"))
-        self.assertEqual(str(cm.exception), "Different cell in row 5, column 1. :: 1.3 != 1.4")
+        self.assertEqual(cm.exception.msg, "Different cell in row 5, column 1.")
+        self.assertEqual(cm.exception.actual, "1.4")
+        self.assertEqual(cm.exception.expected, "1.3")
