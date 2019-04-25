@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.3.1] - 2019-04-25
+### Fixed
+- Handle the use of SMBConnection mock as a context manager (as it is allowed by SMBConnection).
+
 ## [5.3.0] - 2019-04-11
 ### Added
 - version file is now public.
