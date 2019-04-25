@@ -23,6 +23,12 @@ class TestConnection:
     def __init__(self, user_name, password, test_name, machine_name, *args, **kwargs):
         self.remote_name = machine_name
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        pass
+
     def connect(self, *args):
         return self.should_connect
 
