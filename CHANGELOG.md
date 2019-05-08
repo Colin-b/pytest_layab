@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.0.0] - 2019-05-08
+### Changed
+- Do not depends on coverage and nose anymore.
+- Update pytest-cov to version 2.7.1
+
+### Added
+- Add a contributing doc.
+
 ## [5.3.1] - 2019-04-25
 ### Fixed
 - Handle the use of SMBConnection mock as a context manager (as it is allowed by SMBConnection).

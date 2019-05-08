@@ -11,12 +11,8 @@ setup(
         "flask-restplus==0.12.1",
         # Used to mock API responses
         "responses==0.10.6",
-        # Used to run tests
-        "nose==1.3.7",
-        # Used to check code coverage
-        "coverage==4.5.3",
-        # Used to run tests and cover (Jenkins)
-        "pytest-cov==2.6.1",
+        # Used to run tests and cover
+        "pytest-cov==2.7.1",
     ],
     extras_require={
         "testing": [
