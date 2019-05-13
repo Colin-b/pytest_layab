@@ -3,9 +3,8 @@ import json
 import logging
 import os.path
 import sys
-import re
 import tempfile
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Pattern
 
 import responses
 from flask_testing import TestCase
@@ -16,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 def add_get_response(
-    url: Union[str, re._pattern_type],
+    url: Union[str, Pattern],
     data=None,
     file_path: str = None,
     status=200,
@@ -26,7 +25,7 @@ def add_get_response(
 
 
 def add_post_response(
-    url: Union[str, re._pattern_type],
+    url: Union[str, Pattern],
     data=None,
     file_path: str = None,
     status=200,
@@ -37,7 +36,7 @@ def add_post_response(
 
 def _add_response(
     method,
-    url: Union[str, re._pattern_type],
+    url: Union[str, Pattern],
     data=None,
     file_path: str = None,
     status=200,
@@ -272,7 +271,7 @@ class JSONTestCase(TestCase):
             self.assertEqual(expected_file.read(), response.data)
 
     def received_form(
-        self, url: str, expected_headers: Dict[str, str] = None
+        self, url: str, expected_headers: Dict[str, Union[str, Pattern]] = None
     ) -> Dict[str, Union[bytes, str, List[Union[bytes, str]]]]:
         """
         Return received form on this URL so that this content can potentially be decoded before assertion.
@@ -282,25 +281,25 @@ class JSONTestCase(TestCase):
             expected_headers = {"Content-Type": "application/x-www-form-urlencoded "}
         return _to_form(self._received_bytes(url, expected_headers))
 
-    def _received_json(self, url: str, expected_headers: Dict[str, str]):
+    def _received_json(self, url: str, expected_headers: Dict[str, Union[str, Pattern]]):
         if not expected_headers:
             expected_headers = {"Content-Type": "application/json"}
         return _to_json(self._received_bytes(url, expected_headers))
 
-    def _received_text(self, url: str, expected_headers: Dict[str, str]):
+    def _received_text(self, url: str, expected_headers: Dict[str, Union[str, Pattern]]):
         if not expected_headers:
             expected_headers = {"Content-Type": "text/plain"}
         return _to_text(self._received_bytes(url, expected_headers))
 
     def _received_bytes(
-        self, url: str, expected_headers: Dict[str, Union[str, re._pattern_type]]
+        self, url: str, expected_headers: Dict[str, Union[str, Pattern]]
     ) -> Union[bytes, str]:
         actual_request = _get_request(url)
         if not actual_request:
             self.fail(f"{url} was never called.")
 
         for expected_header_name, expected_header_value in expected_headers.items():
-            if isinstance(expected_header_value, re._pattern_type):
+            if isinstance(expected_header_value, Pattern):
                 self.assertRegex(
                     actual_request.headers.get(expected_header_name),
                     expected_header_value.pattern,
@@ -316,7 +315,7 @@ class JSONTestCase(TestCase):
         self,
         url: str,
         expected_form: Dict[str, Union[bytes, str, List[Union[bytes, str]]]],
-        expected_headers: Dict[str, Union[str, re._pattern_type]] = None,
+        expected_headers: Dict[str, Union[str, Pattern]] = None,
     ):
         self.assertEqual(expected_form, self.received_form(url, expected_headers))
 
