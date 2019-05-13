@@ -77,30 +77,55 @@ class JSONTestCase(TestCase):
 
         from importlib import import_module
 
-        try:
-            from pycommon_test.celery_mock import TestCeleryAppProxy
-
-            celery_server = import_module(
-                f"{JSONTestCase._service_module_name}.celery_server"
-            )
-
-            celery_app_func = celery_server.get_celery_app
-
-            def proxify(func):
-                def wrapper(*args, **kwargs):
-                    result = func(*args, **kwargs)
-                    return TestCeleryAppProxy(result)
-
-                return wrapper
-
-            celery_server.get_celery_app = proxify(celery_app_func)
-        except ImportError:
-            pass  # Celery might not be required by application
+        self._mock_celery(import_module)
+        self._mock_huey(import_module)
 
         self.server = import_module(f"{JSONTestCase._service_module_name}.server")
         self.server.application.testing = True
 
         return self.server.application
+
+    @staticmethod
+    def _mock_celery(import_module):
+        try:
+            from flasynk.celery_mock import CeleryMock
+
+            celery_server = import_module(
+                f"{JSONTestCase._service_module_name}.asynchronous_server"
+            )
+
+            celery_app_func = celery_server.get_asynchronous_app
+
+            def proxify(func):
+                def wrapper(*args, **kwargs):
+                    return CeleryMock(func(*args, **kwargs))
+
+                return wrapper
+
+            celery_server.get_asynchronous_app = proxify(celery_app_func)
+        except ImportError:
+            pass  # Celery might not be required by application
+
+    @staticmethod
+    def _mock_huey(import_module):
+        try:
+            huey_server = import_module(
+                f"{JSONTestCase._service_module_name}.asynchronous_server"
+            )
+
+            huey_app_func = huey_server.get_asynchronous_app
+
+            def proxify(func):
+                def wrapper(*args, **kwargs):
+                    huey_app = func(*args, **kwargs)
+                    huey_app.immediate = True
+                    return huey_app
+
+                return wrapper
+
+            huey_server.get_asynchronous_app = proxify(huey_app_func)
+        except ImportError:
+            pass  # Huey might not be required by application
 
     def setUp(self):
         self._log_start()

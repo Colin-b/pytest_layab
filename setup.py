@@ -18,12 +18,8 @@ setup(
         "testing": [
             # Used to manage responses testing
             "requests==2.21.0",
-            # Used by Celery mock
-            "celery==4.3.0",
             # Used by LDAP mock
             "ldap3==2.6",
-            # Used by Samba mock
-            "pysmb==1.1.27",
             # Used by Excel file testing
             "xlrd==1.2.0",
         ]

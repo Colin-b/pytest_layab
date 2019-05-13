@@ -15,7 +15,7 @@ This test case:
  * Log start and end of test.
  * Provides overridable methods to fill and clear database between each test.
  * Provides various assertion methods (in addition to [http://flask.pocoo.org/docs/1.0/testing/]).
- * Mock celery if needed (automatically).
+ * Mock celery or huey if needed (automatically).
  * Handle Asynchronous REST workflow automatically.
 
 ```python
@@ -260,12 +260,4 @@ You can mock ldap3 python module.
 
 ```python
 from pycommon_test.ldap_mock import LDAP3ConnectionMock
-```
-
-### Samba (Linux - Windows) ###
-
-You can mock pysmb python module.
-
-```python
-from pycommon_test.samba_mock import TestConnection
 ```
