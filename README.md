@@ -15,7 +15,7 @@ This test case:
  * Log start and end of test.
  * Provides overridable methods to fill and clear database between each test.
  * Provides various assertion methods (in addition to [http://flask.pocoo.org/docs/1.0/testing/]).
- * Mock celery or huey if needed (automatically).
+ * Can mock celery or huey if needed (by calling mock_huey or mock_celery within create_app).
  * Handle Asynchronous REST workflow automatically.
 
 ```python
