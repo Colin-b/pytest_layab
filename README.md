@@ -2,7 +2,7 @@
 
 <p align="center">
 <a href="https://github.com/ambv/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
-<a href='https://pse.tools.digital.engie.com/drm-all.gem/job/team/view/Python%20modules/job/pycommon-test/job/master/'><img src='https://pse.tools.digital.engie.com/drm-all.gem/buildStatus/icon?job=team/pycommon-test/master'></a>
+<a href='https://pse.tools.digital.engie.com/drm-all.gem/job/team/view/Python%20modules/job/pycommon_test/job/master/'><img src='https://pse.tools.digital.engie.com/drm-all.gem/buildStatus/icon?job=team/pycommon_test/master'></a>
 </p>
 
 Provide helper and mocks to ease test cases writing.
@@ -15,7 +15,7 @@ This test case:
  * Log start and end of test.
  * Provides overridable methods to fill and clear database between each test.
  * Provides various assertion methods (in addition to [http://flask.pocoo.org/docs/1.0/testing/]).
- * Mock celery if needed (automatically).
+ * Can mock celery or huey if needed (by calling mock_huey or mock_celery within create_app).
  * Handle Asynchronous REST workflow automatically.
 
 ```python
@@ -260,12 +260,4 @@ You can mock ldap3 python module.
 
 ```python
 from pycommon_test.ldap_mock import LDAP3ConnectionMock
-```
-
-### Samba (Linux - Windows) ###
-
-You can mock pysmb python module.
-
-```python
-from pycommon_test.samba_mock import TestConnection
 ```

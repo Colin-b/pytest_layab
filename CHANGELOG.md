@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.0.0] - 2019-05-14
+### Removed
+- Remove celery_mock.py, if you were using it, switch to flasynk module.
+- Remove samba_mock.py, if you were using it, switch to pyndows module.
+- Remove services_handler.py (unused and non deterministic)
+
+### Changed
+- You need to manually call mock_celery or mock_huey within your redefined create_app method. No more magic.
+- Mock celery only if celery server is within a asynchronous_server.py file (instead of celery_server.py)
+
+### Added
+- Mock huey if needed
+
 ## [6.0.0] - 2019-05-08
 ### Changed
 - Do not depends on coverage and nose anymore.
@@ -311,7 +324,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Initial release.
 
-[Unreleased]: https://github.tools.digital.engie.com/GEM-Py/pycommon-test/compare/v5.2.0...HEAD
+[Unreleased]: https://github.tools.digital.engie.com/GEM-Py/pycommon-test/compare/v7.0.0...HEAD
+[7.0.0]: https://github.tools.digital.engie.com/GEM-Py/pycommon-test/compare/v6.0.0...v7.0.0
+[6.0.0]: https://github.tools.digital.engie.com/GEM-Py/pycommon-test/compare/v5.3.1...v6.0.0
+[5.3.1]: https://github.tools.digital.engie.com/GEM-Py/pycommon-test/compare/v5.3.0...v5.3.1
+[5.3.0]: https://github.tools.digital.engie.com/GEM-Py/pycommon-test/compare/v5.2.0...v5.3.0
 [5.2.0]: https://github.tools.digital.engie.com/GEM-Py/pycommon-test/compare/v5.1.1...v5.2.0
 [5.1.1]: https://github.tools.digital.engie.com/GEM-Py/pycommon-test/compare/v5.1.0...v5.1.1
 [5.1.0]: https://github.tools.digital.engie.com/GEM-Py/pycommon-test/compare/v5.0.1...v5.1.0

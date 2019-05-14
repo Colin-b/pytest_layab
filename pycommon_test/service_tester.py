@@ -3,9 +3,9 @@ import json
 import logging
 import os.path
 import sys
-import re
 import tempfile
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Pattern
+from importlib import import_module
 
 import responses
 from flask_testing import TestCase
@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 def add_get_response(
-    url: Union[str, re._pattern_type],
+    url: Union[str, Pattern],
     data=None,
     file_path: str = None,
     status=200,
@@ -26,7 +26,7 @@ def add_get_response(
 
 
 def add_post_response(
-    url: Union[str, re._pattern_type],
+    url: Union[str, Pattern],
     data=None,
     file_path: str = None,
     status=200,
@@ -37,7 +37,7 @@ def add_post_response(
 
 def _add_response(
     method,
-    url: Union[str, re._pattern_type],
+    url: Union[str, Pattern],
     data=None,
     file_path: str = None,
     status=200,
@@ -56,6 +56,42 @@ def _add_response(
     responses.add(method=method, url=url, status=status, **kwargs)
 
 
+def mock_celery():
+    from flasynk.celery_mock import CeleryMock
+
+    celery_server = import_module(
+        f"{JSONTestCase._service_module_name}.asynchronous_server"
+    )
+
+    celery_app_func = celery_server.get_asynchronous_app
+
+    def proxify(func):
+        def wrapper(*args, **kwargs):
+            return CeleryMock(func(*args, **kwargs))
+
+        return wrapper
+
+    celery_server.get_asynchronous_app = proxify(celery_app_func)
+
+
+def mock_huey():
+    huey_server = import_module(
+        f"{JSONTestCase._service_module_name}.asynchronous_server"
+    )
+
+    huey_app_func = huey_server.get_asynchronous_app
+
+    def proxify(func):
+        def wrapper(*args, **kwargs):
+            huey_app = func(*args, **kwargs)
+            huey_app.immediate = True
+            return huey_app
+
+        return wrapper
+
+    huey_server.get_asynchronous_app = proxify(huey_app_func)
+
+
 class JSONTestCase(TestCase):
     _service_module_name = None
     server = None
@@ -70,37 +106,19 @@ class JSONTestCase(TestCase):
         service_module_path = os.path.dirname(service_files[0])
         return os.path.basename(service_module_path)
 
-    def create_app(self):
+    def _init_service_module_name(self):
         # Retrieve service module name only once
         if not JSONTestCase._service_module_name:
             JSONTestCase._service_module_name = self._find_service_module_name()
 
-        from importlib import import_module
-
-        try:
-            from pycommon_test.celery_mock import TestCeleryAppProxy
-
-            celery_server = import_module(
-                f"{JSONTestCase._service_module_name}.celery_server"
-            )
-
-            celery_app_func = celery_server.get_celery_app
-
-            def proxify(func):
-                def wrapper(*args, **kwargs):
-                    result = func(*args, **kwargs)
-                    return TestCeleryAppProxy(result)
-
-                return wrapper
-
-            celery_server.get_celery_app = proxify(celery_app_func)
-        except ImportError:
-            pass  # Celery might not be required by application
-
+    def _init_application(self):
         self.server = import_module(f"{JSONTestCase._service_module_name}.server")
         self.server.application.testing = True
-
         return self.server.application
+
+    def create_app(self):
+        self._init_service_module_name()
+        return self._init_application()
 
     def setUp(self):
         self._log_start()
@@ -247,7 +265,7 @@ class JSONTestCase(TestCase):
             self.assertEqual(expected_file.read(), response.data)
 
     def received_form(
-        self, url: str, expected_headers: Dict[str, str] = None
+        self, url: str, expected_headers: Dict[str, Union[str, Pattern]] = None
     ) -> Dict[str, Union[bytes, str, List[Union[bytes, str]]]]:
         """
         Return received form on this URL so that this content can potentially be decoded before assertion.
@@ -257,25 +275,25 @@ class JSONTestCase(TestCase):
             expected_headers = {"Content-Type": "application/x-www-form-urlencoded "}
         return _to_form(self._received_bytes(url, expected_headers))
 
-    def _received_json(self, url: str, expected_headers: Dict[str, str]):
+    def _received_json(self, url: str, expected_headers: Dict[str, Union[str, Pattern]]):
         if not expected_headers:
             expected_headers = {"Content-Type": "application/json"}
         return _to_json(self._received_bytes(url, expected_headers))
 
-    def _received_text(self, url: str, expected_headers: Dict[str, str]):
+    def _received_text(self, url: str, expected_headers: Dict[str, Union[str, Pattern]]):
         if not expected_headers:
             expected_headers = {"Content-Type": "text/plain"}
         return _to_text(self._received_bytes(url, expected_headers))
 
     def _received_bytes(
-        self, url: str, expected_headers: Dict[str, Union[str, re._pattern_type]]
+        self, url: str, expected_headers: Dict[str, Union[str, Pattern]]
     ) -> Union[bytes, str]:
         actual_request = _get_request(url)
         if not actual_request:
             self.fail(f"{url} was never called.")
 
         for expected_header_name, expected_header_value in expected_headers.items():
-            if isinstance(expected_header_value, re._pattern_type):
+            if isinstance(expected_header_value, Pattern):
                 self.assertRegex(
                     actual_request.headers.get(expected_header_name),
                     expected_header_value.pattern,
@@ -291,7 +309,7 @@ class JSONTestCase(TestCase):
         self,
         url: str,
         expected_form: Dict[str, Union[bytes, str, List[Union[bytes, str]]]],
-        expected_headers: Dict[str, Union[str, re._pattern_type]] = None,
+        expected_headers: Dict[str, Union[str, Pattern]] = None,
     ):
         self.assertEqual(expected_form, self.received_form(url, expected_headers))
 
@@ -557,7 +575,6 @@ def _get_request(url: str):
     """Returns the corresponding requests PreparedRequest."""
     for call in responses.calls:
         if call.request.url == url:
-            responses.calls._calls.remove(
-                call
-            )  # Pop out verified request (to be able to check multiple requests)
+            # Pop out verified request (to be able to check multiple requests)
+            responses.calls._calls.remove(call)
             return call.request
