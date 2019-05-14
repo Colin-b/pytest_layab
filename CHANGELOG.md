@@ -6,13 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [7.0.0] - 2019-05-13
+## [7.0.0] - 2019-05-14
 ### Removed
 - Remove celery_mock.py, if you were using it, switch to flasynk module.
 - Remove samba_mock.py, if you were using it, switch to pyndows module.
 - Remove services_handler.py (unused and non deterministic)
 
 ### Changed
+- You need to manually call mock_celery or mock_huey within your redefined create_app method. No more magic.
 - Mock celery only if celery server is within a asynchronous_server.py file (instead of celery_server.py)
 
 ### Added
