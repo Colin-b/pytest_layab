@@ -5,6 +5,7 @@ import re
 import requests
 import responses
 import flask
+import unittest
 
 from pycommon_test import service_tester
 
@@ -562,3 +563,24 @@ class ServiceTesterMock(service_tester.JSONTestCase):
         with self.assertRaises(Exception) as cm:
             self.assert_excel_file(response, os.path.join(this_dir, "resources", "different_value.xlsx"))
         self.assertIn("Different cell in row 5, column 1.", str(cm.exception))
+
+
+class ExcelTest(unittest.TestCase):
+    def test_excel_file_content_with_different_value(self):
+        this_dir = os.path.abspath(os.path.dirname(__file__))
+        with open(os.path.join(this_dir, "resources", "sent_file.xlsx"), "rb") as file:
+            with self.assertRaises(Exception) as cm:
+                service_tester.assert_excel_content(self, file.read(), os.path.join(this_dir, "resources", "different_value.xlsx"))
+        self.assertIn("Different cell in row 5, column 1.", str(cm.exception))
+
+    def test_excel_file_content_with_different_format(self):
+        this_dir = os.path.abspath(os.path.dirname(__file__))
+        with open(os.path.join(this_dir, "resources", "sent_file.xlsx"), "rb") as file:
+            with self.assertRaises(Exception) as cm:
+                service_tester.assert_excel_content(self, file.read(), os.path.join(this_dir, "resources", "different_format.xlsx"))
+        self.assertIn("Different cell type in row 5, column 3.", str(cm.exception))
+
+    def test_excel_file_content(self):
+        this_dir = os.path.abspath(os.path.dirname(__file__))
+        with open(os.path.join(this_dir, "resources", "sent_file.xlsx"), "rb") as file:
+            service_tester.assert_excel_content(self, file.read(), os.path.join(this_dir, "resources", "sent_file_copy.xlsx"))
