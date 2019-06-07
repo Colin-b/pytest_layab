@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.1.0] - 2019-06-07
+### Added
+- service_tester.assert_excel_content
+
+### Changed
+- Deprecated service_tester.JSONTestCase.assert_excel_content in favour of service_tester.assert_excel_content
+
 ## [7.0.0] - 2019-05-14
 ### Removed
 - Remove celery_mock.py, if you were using it, switch to flasynk module.
@@ -324,7 +331,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Initial release.
 
-[Unreleased]: https://github.tools.digital.engie.com/GEM-Py/pycommon-test/compare/v7.0.0...HEAD
+[Unreleased]: https://github.tools.digital.engie.com/GEM-Py/pycommon-test/compare/v7.1.0...HEAD
+[7.1.0]: https://github.tools.digital.engie.com/GEM-Py/pycommon-test/compare/v7.0.0...v7.1.0
 [7.0.0]: https://github.tools.digital.engie.com/GEM-Py/pycommon-test/compare/v6.0.0...v7.0.0
 [6.0.0]: https://github.tools.digital.engie.com/GEM-Py/pycommon-test/compare/v5.3.1...v6.0.0
 [5.3.1]: https://github.tools.digital.engie.com/GEM-Py/pycommon-test/compare/v5.3.0...v5.3.1
