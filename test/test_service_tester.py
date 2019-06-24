@@ -5,7 +5,6 @@ import re
 import requests
 import responses
 import flask
-import unittest
 
 from pycommon_test import service_tester
 
@@ -70,20 +69,6 @@ class ServiceTesterMock(service_tester.JSONTestCase):
         def test_delete_without_handle_202():
             response = flask.make_response("toto", 202)
             response.headers["location"] = "http://test"
-            return response
-
-        @app.route("/test_excel_file")
-        def test_excel_file():
-            this_dir = os.path.abspath(os.path.dirname(__file__))
-            with open(os.path.join(this_dir, "resources", "sent_file.xlsx"), "rb") as file:
-                response = flask.make_response(file.read())
-            response.headers[
-                "Content-Type"
-            ] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            response.headers[
-                "Content-Disposition"
-            ] = f'attachment; filename=sent_file.xlsx'
-            response.headers["Access-Control-Expose-Headers"] = "Content-Disposition"
             return response
 
         app.testing = True
@@ -525,62 +510,3 @@ class ServiceTesterMock(service_tester.JSONTestCase):
         response = self.delete("/test_delete_without_handle_202", handle_202=False)
         self.assert_202_regex(response, "http://test")
         self.assert_text(response, "toto")
-
-    def test_excel_file_content(self):
-        response = self.get("/test_excel_file")
-        this_dir = os.path.abspath(os.path.dirname(__file__))
-        self.assert_excel_content(response.data, os.path.join(this_dir, "resources", "sent_file_copy.xlsx"))
-
-    def test_excel_file_response(self):
-        response = self.get("/test_excel_file")
-        this_dir = os.path.abspath(os.path.dirname(__file__))
-        self.assert_excel_file(response, os.path.join(this_dir, "resources", "sent_file_copy.xlsx"))
-
-    def test_excel_file_content_with_different_format(self):
-        response = self.get("/test_excel_file")
-        this_dir = os.path.abspath(os.path.dirname(__file__))
-        with self.assertRaises(Exception) as cm:
-            self.assert_excel_content(response.data, os.path.join(this_dir, "resources", "different_format.xlsx"))
-        self.assertIn("Different cell type in row 5, column 3.", str(cm.exception))
-
-    def test_excel_file_response_with_different_format(self):
-        response = self.get("/test_excel_file")
-        this_dir = os.path.abspath(os.path.dirname(__file__))
-        with self.assertRaises(Exception) as cm:
-            self.assert_excel_file(response, os.path.join(this_dir, "resources", "different_format.xlsx"))
-        self.assertIn("Different cell type in row 5, column 3.", str(cm.exception))
-
-    def test_excel_file_content_with_different_value(self):
-        response = self.get("/test_excel_file")
-        this_dir = os.path.abspath(os.path.dirname(__file__))
-        with self.assertRaises(Exception) as cm:
-            self.assert_excel_content(response.data, os.path.join(this_dir, "resources", "different_value.xlsx"))
-        self.assertIn("Different cell in row 5, column 1.", str(cm.exception))
-
-    def test_excel_file_response_with_different_value(self):
-        response = self.get("/test_excel_file")
-        this_dir = os.path.abspath(os.path.dirname(__file__))
-        with self.assertRaises(Exception) as cm:
-            self.assert_excel_file(response, os.path.join(this_dir, "resources", "different_value.xlsx"))
-        self.assertIn("Different cell in row 5, column 1.", str(cm.exception))
-
-
-class ExcelTest(unittest.TestCase):
-    def test_excel_file_content_with_different_value(self):
-        this_dir = os.path.abspath(os.path.dirname(__file__))
-        with open(os.path.join(this_dir, "resources", "sent_file.xlsx"), "rb") as file:
-            with self.assertRaises(Exception) as cm:
-                service_tester.assert_excel_content(self, file.read(), os.path.join(this_dir, "resources", "different_value.xlsx"))
-        self.assertIn("Different cell in row 5, column 1.", str(cm.exception))
-
-    def test_excel_file_content_with_different_format(self):
-        this_dir = os.path.abspath(os.path.dirname(__file__))
-        with open(os.path.join(this_dir, "resources", "sent_file.xlsx"), "rb") as file:
-            with self.assertRaises(Exception) as cm:
-                service_tester.assert_excel_content(self, file.read(), os.path.join(this_dir, "resources", "different_format.xlsx"))
-        self.assertIn("Different cell type in row 5, column 3.", str(cm.exception))
-
-    def test_excel_file_content(self):
-        this_dir = os.path.abspath(os.path.dirname(__file__))
-        with open(os.path.join(this_dir, "resources", "sent_file.xlsx"), "rb") as file:
-            service_tester.assert_excel_content(self, file.read(), os.path.join(this_dir, "resources", "sent_file_copy.xlsx"))

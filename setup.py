@@ -20,8 +20,6 @@ setup(
             "requests==2.21.0",
             # Used by LDAP mock
             "ldap3==2.6",
-            # Used by Excel file testing
-            "xlrd==1.2.0",
         ]
     },
 )

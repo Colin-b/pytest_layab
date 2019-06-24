@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.0.0] - 2019-06-24
+### Removed 
+- service_tester.assert_excel_content in favour of tesxcel module.
+- service_tester.JSONTestCase.assert_excel_content in favour tesxcel module.
+- service_tester.assert_excel_file in favour of tesxcel module.
+
 ## [7.1.0] - 2019-06-07
 ### Added
 - service_tester.assert_excel_content
@@ -331,7 +337,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Initial release.
 
-[Unreleased]: https://github.tools.digital.engie.com/GEM-Py/pycommon-test/compare/v7.1.0...HEAD
+[Unreleased]: https://github.tools.digital.engie.com/GEM-Py/pycommon-test/compare/v8.0.0...HEAD
+[8.0.0]: https://github.tools.digital.engie.com/GEM-Py/pycommon-test/compare/v7.1.0...v8.0.0
 [7.1.0]: https://github.tools.digital.engie.com/GEM-Py/pycommon-test/compare/v7.0.0...v7.1.0
 [7.0.0]: https://github.tools.digital.engie.com/GEM-Py/pycommon-test/compare/v6.0.0...v7.0.0
 [6.0.0]: https://github.tools.digital.engie.com/GEM-Py/pycommon-test/compare/v5.3.1...v6.0.0
