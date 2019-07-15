@@ -167,8 +167,8 @@ class ServiceTesterMock(service_tester.JSONTestCase):
     @responses.activate
     def test_assert_received_json(self):
         service_tester.add_post_response("http://test/post", {})
-        requests.post("http://test/post", json={"key": "value"})
-        self.assert_received_json("http://test/post", {"key": "value"})
+        requests.post("http://test/post", json={"key": ["value 1", "value 2"]})
+        self.assert_received_json("http://test/post", {"key": ["value 2", "value 1"]})
 
     @responses.activate
     def test_received_form(self):
