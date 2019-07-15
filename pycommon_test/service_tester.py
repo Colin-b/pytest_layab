@@ -3,10 +3,8 @@ import json
 import logging
 import os.path
 import sys
-import tempfile
 from typing import List, Dict, Union, Pattern
 from importlib import import_module
-import unittest
 
 import responses
 from flask_testing import TestCase
@@ -321,10 +319,7 @@ class JSONTestCase(TestCase):
         expected_headers: Dict[str, str] = None,
     ):
         actual = self._received_json(url, expected_headers)
-        if isinstance(actual, list):  # List order does not matter in JSON
-            self.assertCountEqual(expected, actual)
-        else:
-            self.assertEqual(expected, actual)
+        self._assert_json_equal(expected, actual)
 
     def assert_received_text(
         self, url: str, expected: str, expected_headers: Dict[str, str] = None
@@ -335,56 +330,6 @@ class JSONTestCase(TestCase):
         self, url: str, expected: str, expected_headers: Dict[str, str] = None
     ):
         self.assertRegex(self._received_text(url, expected_headers), expected)
-
-    def assert_swagger(self, response, expected):
-        """
-        Assert that response is containing the following JSON.
-
-        :param response: Received query response.
-        :param expected: Expected python structure corresponding to the JSON.
-        """
-        actual = _to_json(response.data)
-        actual_paths = actual["paths"] or {}
-        actual["paths"] = None
-        expected_paths = expected.get("paths", {})
-        expected["paths"] = None
-        self.assertEqual(expected, actual)
-        self.assertEqual(
-            len(expected_paths), len(actual_paths), msg="Different number of paths."
-        )
-        actual_parameters = actual_paths.pop("parameters", None)
-        if actual_parameters:
-            self.assertEqual(expected_paths.get("parameters"), actual_parameters)
-        for path_key, actual_path in actual_paths.items():
-            expected_path = expected_paths.get(path_key, {})
-            self.assertEqual(
-                len(expected_path),
-                len(actual_path),
-                msg=f"Different number of {path_key} methods.",
-            )
-            actual_parameters = actual_path.pop("parameters", None)
-            if actual_parameters:
-                self.assertEqual(expected_path.get("parameters"), actual_parameters)
-            for method_key, actual_method in actual_path.items():
-                expected_method = expected_path.get(method_key, {})
-                if "parameters" in expected_method:
-                    expected_parameters = sorted(
-                        expected_method.get("parameters", {}),
-                        key=lambda parameter: parameter.get("name", None),
-                    )
-                else:
-                    expected_parameters = None
-                expected_method["parameters"] = None
-                if "parameters" in actual_method:
-                    actual_parameters = sorted(
-                        actual_method["parameters"],
-                        key=lambda parameter: parameter["name"],
-                    )
-                else:
-                    actual_parameters = None
-                actual_method["parameters"] = None
-                self.assertEqual(expected_method, actual_method)
-                self.assertEqual(expected_parameters, actual_parameters)
 
     def get(self, url: str, handle_202: bool = True, *args, **kwargs):
         """
