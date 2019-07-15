@@ -152,10 +152,6 @@ class ServerTest(JSONTestCase):
     def test_json_with_regular_expression(self):
         response = None
         self.assert_json_regex(response, {'expected_key': 'Expected \d\d value'})
-
-    def test_open_api_definition(self):
-        response = None
-        self.assert_swagger(response, {'expected_swagger_key': 'Expected swagger value'})
 ```
 
 ### Checking response Text ###
