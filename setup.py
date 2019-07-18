@@ -6,7 +6,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         # Used to manage testing of a Flask application
-        "flask_testing==0.7.1",
+        "pytest-flask==0.15.0",
         # Used to manage testing of Flask RestPlus components
         "flask-restplus==0.12.1",
         # Used to mock API responses
@@ -17,7 +17,7 @@ setup(
     extras_require={
         "testing": [
             # Used to manage responses testing
-            "requests==2.21.0",
+            "requests==2.22.0",
             # Used by LDAP mock
             "ldap3==2.6",
         ]
