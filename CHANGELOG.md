@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.0.0] - 2019-07-18
+### Removed
+- datetime_mock (mock_now / revert_now) are not available anymore. Use unittest or pytest mock instead. See README for details.
+- Everything related to the testing of an external REST API (called using requests) is now within responses_helper.
+- Everything related to the testing of a REST API (created with flask) is now within pytest_flask_helper.
+- Everything related to the testing of python service template REST API is now within pytest_api_helper.
+- Everything related to basic assertion is now within pytest_helper
+
+### Changed
+- Service testing now use pytest instead of unittest (no more classes, fixtures instead). See README for details.
+
+### Added
+- Expose version within pycommon_test.__version__
+
 ## [9.0.0] - 2019-07-15
 ### Fixed
 - service_tester.assert_received_json does not expects lists to be ordered by default anymore.
@@ -344,7 +358,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Initial release.
 
-[Unreleased]: https://github.tools.digital.engie.com/GEM-Py/pycommon_test/compare/v9.0.0...HEAD
+[Unreleased]: https://github.tools.digital.engie.com/GEM-Py/pycommon_test/compare/v10.0.0...HEAD
+[10.0.0]: https://github.tools.digital.engie.com/GEM-Py/pycommon_test/compare/v9.0.0...v10.0.0
 [9.0.0]: https://github.tools.digital.engie.com/GEM-Py/pycommon_test/compare/v8.0.0...v9.0.0
 [8.0.0]: https://github.tools.digital.engie.com/GEM-Py/pycommon_test/compare/v7.1.0...v8.0.0
 [7.1.0]: https://github.tools.digital.engie.com/GEM-Py/pycommon_test/compare/v7.0.0...v7.1.0
