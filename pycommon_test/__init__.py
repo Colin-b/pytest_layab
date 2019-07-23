@@ -1,2 +1,1 @@
-from pycommon_test.flask_restplus_mock import TestAPI
 from pycommon_test.version import __version__
