@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.0.0] - 2019-07-19
+### Removed
+- adam_mock (it is now within adamhelper). It should be used as a pytest fixture now. Provide adam_url fixture.
+- ldap_mock (it is now within adamrest tests).
+- flask_restplus_mock (it is now within pycommon-database tests).
+
 ## [10.0.0] - 2019-07-18
 ### Removed
 - datetime_mock (mock_now / revert_now) are not available anymore. Use unittest or pytest mock instead. See README for details.
@@ -358,7 +364,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Initial release.
 
-[Unreleased]: https://github.tools.digital.engie.com/GEM-Py/pycommon_test/compare/v10.0.0...HEAD
+[Unreleased]: https://github.tools.digital.engie.com/GEM-Py/pycommon_test/compare/v11.0.0...HEAD
+[11.0.0]: https://github.tools.digital.engie.com/GEM-Py/pycommon_test/compare/v10.0.0...v11.0.0
 [10.0.0]: https://github.tools.digital.engie.com/GEM-Py/pycommon_test/compare/v9.0.0...v10.0.0
 [9.0.0]: https://github.tools.digital.engie.com/GEM-Py/pycommon_test/compare/v8.0.0...v9.0.0
 [8.0.0]: https://github.tools.digital.engie.com/GEM-Py/pycommon_test/compare/v7.1.0...v8.0.0
