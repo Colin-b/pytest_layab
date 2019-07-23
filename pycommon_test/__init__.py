@@ -1,3 +1,2 @@
-from pycommon_test.adam_mock import AdamMock, mock_user_groups
 from pycommon_test.flask_restplus_mock import TestAPI
 from pycommon_test.version import __version__
