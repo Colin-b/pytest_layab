@@ -4,7 +4,7 @@ import tempfile
 import flask
 import pytest
 
-from pycommon_test import pytest_flask_helper
+import pytest_layab
 
 
 @pytest.fixture
@@ -69,37 +69,37 @@ def test_assert_file(client):
         temp_file_path = os.path.join(temp_dir, "test_file")
         with open(temp_file_path, "wt") as test_file:
             test_file.write("toto")
-        pytest_flask_helper.assert_file(response, temp_file_path)
+        pytest_layab.assert_file(response, temp_file_path)
 
 
 def test_assert_201(client):
     response = client.get("/test_assert_201")
-    pytest_flask_helper.assert_201(response, "http://test")
+    pytest_layab.assert_201(response, "http://test")
 
 
 def test_assert_202_regex(client):
     response = client.get("/test_assert_202_regex")
-    pytest_flask_helper.assert_202_regex(response, "http://test")
+    pytest_layab.assert_202_regex(response, "http://test")
 
 
 def test_assert_204(client):
     response = client.get("/test_assert_204")
-    pytest_flask_helper.assert_204(response)
+    pytest_layab.assert_204(response)
 
 
 def test_assert_303_regex(client):
     response = client.get("/test_assert_303_regex")
-    pytest_flask_helper.assert_303_regex(response, "http://test")
+    pytest_layab.assert_303_regex(response, "http://test")
 
 
 def test_assert_async(client):
     response = client.get("/test_assert_async")
-    response = pytest_flask_helper.assert_async(client, response)
+    response = pytest_layab.assert_async(client, response)
     assert response.get_data(as_text=True) == "This is the result"
 
 
 def test_post_json(client):
-    response = pytest_flask_helper.post_json(
+    response = pytest_layab.post_json(
         client,
         "/test_post_json",
         {"test": "test value"},
@@ -112,13 +112,13 @@ def test_post_file_and_assert_file(client):
         temp_file_path = os.path.join(temp_dir, "test_file")
         with open(temp_file_path, "wt") as test_file:
             test_file.write("toto")
-        response = pytest_flask_helper.post_file(
+        response = pytest_layab.post_file(
             client,
             "/test_post_file_and_assert_file",
             "test_file",
             temp_file_path,
         )
-        pytest_flask_helper.assert_file(response, temp_file_path)
+        pytest_layab.assert_file(response, temp_file_path)
 
 
 def test_post_file_with_additional_json_and_assert_file(client):
@@ -126,18 +126,18 @@ def test_post_file_with_additional_json_and_assert_file(client):
         temp_file_path = os.path.join(temp_dir, "test_file")
         with open(temp_file_path, "wt") as test_file:
             test_file.write("toto")
-        response = pytest_flask_helper.post_file(
+        response = pytest_layab.post_file(
             client,
             "/test_post_file_and_assert_file",
             "test_file",
             temp_file_path,
             additional_json={"key": "value"}
         )
-        pytest_flask_helper.assert_file(response, temp_file_path)
+        pytest_layab.assert_file(response, temp_file_path)
 
 
 def test_put_json(client):
-    response = pytest_flask_helper.put_json(
+    response = pytest_layab.put_json(
         client,
         "/test_put_json",
         {"test": "test value"},

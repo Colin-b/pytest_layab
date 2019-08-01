@@ -38,33 +38,3 @@ def async_service_module(service_module_name):
     return importlib.import_module(
         f"{service_module_name}.asynchronous_server"
     )
-
-
-@pytest.fixture
-def mock_celery(async_service_module):
-    from flasynk.celery_mock import CeleryMock
-
-    celery_app_func = async_service_module.get_asynchronous_app
-
-    def proxify(func):
-        def wrapper(*args, **kwargs):
-            return CeleryMock(func(*args, **kwargs))
-
-        return wrapper
-
-    async_service_module.get_asynchronous_app = proxify(celery_app_func)
-
-
-@pytest.fixture
-def mock_huey(async_service_module):
-    huey_app_func = async_service_module.get_asynchronous_app
-
-    def proxify(func):
-        def wrapper(*args, **kwargs):
-            huey_app = func(*args, **kwargs)
-            huey_app.immediate = True
-            return huey_app
-
-        return wrapper
-
-    async_service_module.get_asynchronous_app = proxify(huey_app_func)

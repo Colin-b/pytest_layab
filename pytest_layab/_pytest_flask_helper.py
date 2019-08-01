@@ -2,7 +2,7 @@ import json
 from typing import Union
 import re
 
-from flask.wrappers import Response
+from flask import Response
 from flask.testing import Client
 
 
