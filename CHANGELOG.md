@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Update CONTRIBUTING documentation to explain how to install pre-commit python module using pip.
 - Ensure that exceptions are not propagated to the client when testing APIs as the real HTTP response should be tested.
+- Ensure full test coverage.
+
+### Added
+- before_service_init fixture that can be overridden to perform actions before initializing service
 
 ## [1.0.0] - 2019-08-01
 ### Changed
