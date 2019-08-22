@@ -20,7 +20,7 @@ setup(
     ],
     python_requires=">=3.6",
     project_urls={
-        "Changelog": "https://github.tools.digital.engie.com/GEM-Py/pytest_layab/blob/development/CHANGELOG.md",
+        "Changelog": "https://github.tools.digital.engie.com/GEM-Py/pytest_layab/blob/master/CHANGELOG.md",
         "Issues": "https://github.tools.digital.engie.com/GEM-Py/pytest_layab/issues",
     },
     license="MIT",

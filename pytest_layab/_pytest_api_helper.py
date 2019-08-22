@@ -7,7 +7,12 @@ import pytest
 
 
 @pytest.fixture
-def service_module_name() -> str:
+def before_service_init():
+    pass
+
+
+@pytest.fixture
+def service_module_name(before_service_init) -> str:
     test_file_path = sys.modules["test"].__file__
     test_folder_path = os.path.dirname(test_file_path)
     root_folder_path = os.path.join(test_folder_path, "..")
@@ -28,6 +33,7 @@ def service_module(service_module_name):
 @pytest.fixture
 def app(service_module):
     service_module.application.testing = True
+    service_module.application.config["PROPAGATE_EXCEPTIONS"] = False
     return service_module.application
 
 
