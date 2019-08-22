@@ -28,6 +28,7 @@ def service_module(service_module_name):
 @pytest.fixture
 def app(service_module):
     service_module.application.testing = True
+    service_module.application.config["PROPAGATE_EXCEPTIONS"] = False
     return service_module.application
 
 
