@@ -16,12 +16,12 @@ setup(
     packages=find_packages(),
     install_requires=[
         # Used to manage testing of a Flask application
-        "pytest-flask==0.15.0",
+        "pytest-flask==0.15.*",
     ],
     python_requires=">=3.6",
     project_urls={
-        "Changelog": "https://github.tools.digital.engie.com/GEM-Py/pytest_layab/blob/master/CHANGELOG.md",
-        "Issues": "https://github.tools.digital.engie.com/GEM-Py/pytest_layab/issues",
+        "Changelog": "https://github.tools.digital.engie.com/gempy/pytest_layab/blob/master/CHANGELOG.md",
+        "Issues": "https://github.tools.digital.engie.com/gempy/pytest_layab/issues",
     },
     license="MIT",
     classifiers=[
@@ -33,6 +33,7 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "Topic :: Software Development :: Build Tools",
     ],
     keywords=["test", "flask"],

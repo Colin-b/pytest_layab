@@ -1,16 +1,16 @@
 <h2 align="center">PyTest fixtures and assertions functions for layab</h2>
 
 <p align="center">
-<a href='https://github.tools.digital.engie.com/GEM-Py/pytest_layab/releases/latest'><img src='https://pse.tools.digital.engie.com/drm-all.gem/buildStatus/icon?job=team/pytest_layab/master&config=version'></a>
-<a href='https://pse.tools.digital.engie.com/drm-all.gem/job/team/view/Python%20modules/job/pytest_layab/job/master/'><img src='https://pse.tools.digital.engie.com/drm-all.gem/buildStatus/icon?job=team/pytest_layab/master'></a>
-<a href='https://pse.tools.digital.engie.com/drm-all.gem/job/team/view/Python%20modules/job/pytest_layab/job/master/cobertura/'><img src='https://pse.tools.digital.engie.com/drm-all.gem/buildStatus/icon?job=team/pytest_layab/master&config=testCoverage'></a>
+<a href='https://github.tools.digital.engie.com/gempy/pytest_layab/releases/latest'><img src='https://pse.tools.digital.engie.com/all/buildStatus/icon?job=team/pytest_layab/master&config=version'></a>
+<a href='https://pse.tools.digital.engie.com/all/job/team/view/Python%20modules/job/pytest_layab/job/master/'><img src='https://pse.tools.digital.engie.com/all/buildStatus/icon?job=team/pytest_layab/master'></a>
+<a href='https://pse.tools.digital.engie.com/all/job/team/view/Python%20modules/job/pytest_layab/job/master/cobertura/'><img src='https://pse.tools.digital.engie.com/all/buildStatus/icon?job=team/pytest_layab/master&config=testCoverage'></a>
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
-<a href='https://pse.tools.digital.engie.com/drm-all.gem/job/team/view/Python%20modules/job/pytest_layab/job/master/lastSuccessfulBuild/testReport/'><img src='https://pse.tools.digital.engie.com/drm-all.gem/buildStatus/icon?job=team/pytest_layab/master&config=testCount'></a>
+<a href='https://pse.tools.digital.engie.com/all/job/team/view/Python%20modules/job/pytest_layab/job/master/lastSuccessfulBuild/testReport/'><img src='https://pse.tools.digital.engie.com/all/buildStatus/icon?job=team/pytest_layab/master&config=testCount'></a>
 </p>
 
 Provide helper and mocks to ease test cases writing.
 
-## Service testing ##
+## Service testing
 
 You can have access to several REST API assertion functions
 
@@ -20,7 +20,7 @@ If you are using pytest you can import the following fixtures:
  * async_service_module (providing asynchronous_server)
  * app (providing flask app)
 
-### Sending a GET request ###
+### Sending a GET request
 
 ```python
 from pytest_layab import *
@@ -30,7 +30,7 @@ def test_get(client):
     response = client.get('/my_endpoint')
 ```
 
-### Posting JSON ###
+### Posting JSON
 
 ```python
 from pytest_layab import *
@@ -42,7 +42,7 @@ def test_json_post(client):
     })
 ```
 
-### Posting file ###
+### Posting file
 
 ```python
 from pytest_layab import *
@@ -52,7 +52,7 @@ def test_file_post(client):
     response = post_file(client, '/my_endpoint', 'file_name', 'file/path')
 ```
 
-### Posting non JSON ###
+### Posting non JSON
 
 ```python
 from pytest_layab import *
@@ -62,7 +62,7 @@ def test_post(client):
     response = client.post('/my_endpoint', 'data to be sent')
 ```
 
-### Putting JSON ###
+### Putting JSON
 
 ```python
 from pytest_layab import *
@@ -74,7 +74,7 @@ def test_json_put(client):
     })
 ```
 
-### Putting non JSON ###
+### Putting non JSON
 
 ```python
 from pytest_layab import *
@@ -84,7 +84,7 @@ def test_put(client):
     response = client.put('/my_endpoint', 'data to be sent')
 ```
 
-### Sending a DELETE request ###
+### Sending a DELETE request
 
 ```python
 from pytest_layab import *
@@ -94,7 +94,7 @@ def test_delete(client):
     response = client.delete('/my_endpoint')
 ```
 
-### Checking response code ###
+### Checking response code
 
 ```python
 from pytest_layab import *
@@ -121,7 +121,7 @@ def test_303_see_other(client):
     assert_303_regex(response, '/my_new_location/.*')
 ```
 
-### Checking response JSON ###
+### Checking response JSON
 
 ```python
 from pytest_layab import *
@@ -132,7 +132,7 @@ def test_json_exact_content(client):
     assert response.json == {'expected_key': 'Expected 13 value'}
 ```
 
-### Checking response Text ###
+### Checking response Text
 
 ```python
 import re
@@ -153,7 +153,7 @@ def test_text_with_content_in_a_file(client):
     assert_file(response, 'path/to/file/with/expected/content')
 ```
 
-### Checking response bytes ###
+### Checking response bytes
 
 ```python
 from pytest_layab import *
@@ -164,7 +164,7 @@ def test_bytes_with_content_in_a_file(client):
     assert_file(response, 'path/to/file/with/expected/content')
 ```
 
-## Basic Assertions ##
+## Basic Assertions
 
 ```python
 from pytest_layab import *
@@ -174,9 +174,9 @@ def test_without_list_order():
     assert_items_equal({'expected_key': ['First value', 'Second value']}, {'expected_key': ['Second value', 'First value']})
 ```
 
-## Mocks ##
+## Mocks
 
-### Date-Time ###
+### Date-Time
 
 You can mock current date-time.
 
@@ -199,7 +199,7 @@ def test_date_mock(monkeypatch):
 ```
 
 ## How to install
-1. [python 3.7+](https://www.python.org/downloads/) must be installed
+1. [python 3.6+](https://www.python.org/downloads/) must be installed
 2. Use pip to install module:
 ```sh
 python -m pip install pytest_layab -i https://all-team-remote:tBa%40W%29tvB%5E%3C%3B2Jm3@artifactory.tools.digital.engie.com/artifactory/api/pypi/all-team-pypi-prod/simple
