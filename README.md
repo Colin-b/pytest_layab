@@ -16,10 +16,11 @@ Provide helper and mocks to ease test cases writing.
 You can have access to several REST API assertion functions
 
 If you are using pytest you can import the following fixtures:
- * service_module_name (providing service module name)
- * service_module (providing server)
+ * test_module_name (providing test module name, default to "test")
+ * service_module_name (providing service module name, default to the folder containing server.py)
+ * service_module (providing server, retrieved thanks to the service module name)
  * async_service_module (providing asynchronous_server)
- * app (providing flask app)
+ * app (providing flask app, default to application within service_module)
 
 ### Sending a GET request
 
