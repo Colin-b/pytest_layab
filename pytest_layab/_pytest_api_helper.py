@@ -12,8 +12,13 @@ def before_service_init():
 
 
 @pytest.fixture
-def service_module_name(before_service_init) -> str:
-    test_file_path = sys.modules["test"].__file__
+def test_module_name():
+    return "test"
+
+
+@pytest.fixture
+def service_module_name(before_service_init, test_module_name) -> str:
+    test_file_path = sys.modules[test_module_name].__file__
     test_folder_path = os.path.dirname(test_file_path)
     root_folder_path = os.path.join(test_folder_path, "..")
     service_files = glob.glob(f"{root_folder_path}/*/server.py")

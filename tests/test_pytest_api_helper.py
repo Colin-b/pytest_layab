@@ -13,6 +13,11 @@ def before_service_init():
     shutil.rmtree(path_to_temp_service_dir)
 
 
+@pytest.fixture
+def test_module_name():
+    return "tests"
+
+
 def create_temp_service():
     path_to_temp_service_dir = os.path.join(os.path.dirname(__file__), "..", "temp_service")
     if not os.path.exists(path_to_temp_service_dir):
