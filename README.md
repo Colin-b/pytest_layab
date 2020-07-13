@@ -186,18 +186,28 @@ You can mock current date-time.
 import module_where_datetime_is_used
 
 
-class DateTimeMock:
-    @staticmethod
-    def utcnow():
-        class UTCDateTimeMock:
-            @staticmethod
-            def isoformat():
-                return "2018-10-11T15:05:05.663979"
-        return UTCDateTimeMock
+_date_time_for_tests = datetime.datetime(2018, 10, 11, 15, 5, 5, 663979)
+
+
+class DateTimeModuleMock:
+    class DateTimeMock(datetime.datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return _date_time_for_tests.replace(tzinfo=tz)
+    
+    class DateMock(datetime.date):
+        @classmethod
+        def today(cls):
+            return _date_time_for_tests.date()
+
+    timedelta = datetime.timedelta
+    timezone = datetime.timezone
+    datetime = DateTimeMock
+    date = DateMock
 
 
 def test_date_mock(monkeypatch):
-    monkeypatch.setattr(module_where_datetime_is_used, "datetime", DateTimeMock)
+    monkeypatch.setattr(module_where_datetime_is_used, "datetime", DateTimeModuleMock)
 ```
 
 ## How to install
