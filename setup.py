@@ -32,14 +32,17 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Topic :: Software Development :: Build Tools",
     ],
-    keywords=["test", "flask"],
+    keywords=["test", "layab", "flask"],
     packages=find_packages(exclude=["tests*"]),
-    install_requires=[
-        # Used to manage testing of a Flask application
-        "pytest-flask==0.15.*",
-        # Used to check coverage
-        "pytest-cov==2.*",
-    ],
+    install_requires=[],
+    extras_require={
+        "testing": [
+            # Used to manage testing of a Flask application
+            "pytest-flask==1.*",
+            # Used to check coverage
+            "pytest-cov==2.*",
+        ]
+    },
     python_requires=">=3.6",
     project_urls={
         "GitHub": "https://github.com/Colin-b/pytest_layab",

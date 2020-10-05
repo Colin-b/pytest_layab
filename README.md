@@ -2,10 +2,10 @@
 
 <p align="center">
 <a href="https://pypi.org/project/pytest-layab/"><img alt="pypi version" src="https://img.shields.io/pypi/v/pytest-layab"></a>
-<a href="https://travis-ci.org/Colin-b/pytest_layab"><img alt="Build status" src="https://api.travis-ci.org/Colin-b/pytest_layab.svg?branch=develop"></a>
-<a href="https://travis-ci.org/Colin-b/pytest_layab"><img alt="Coverage" src="https://img.shields.io/badge/coverage-100%25-brightgreen"></a>
+<a href="https://travis-ci.com/Colin-b/pytest_layab"><img alt="Build status" src="https://api.travis-ci.com/Colin-b/pytest_layab.svg?branch=master"></a>
+<a href="https://travis-ci.com/Colin-b/pytest_layab"><img alt="Coverage" src="https://img.shields.io/badge/coverage-100%25-brightgreen"></a>
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
-<a href="https://travis-ci.org/Colin-b/pytest_layab"><img alt="Number of tests" src="https://img.shields.io/badge/tests-18 passed-blue"></a>
+<a href="https://travis-ci.com/Colin-b/pytest_layab"><img alt="Number of tests" src="https://img.shields.io/badge/tests-18 passed-blue"></a>
 <a href="https://pypi.org/project/pytest-layab/"><img alt="Number of downloads" src="https://img.shields.io/pypi/dm/pytest-layab"></a>
 </p>
 
@@ -13,29 +13,39 @@ Provide helper and mocks to ease test cases writing.
 
 ## Service testing
 
-You can have access to several REST API assertion functions
+### Flask
 
-If you are using pytest you can import the following fixtures:
- * test_module_name (providing test module name, default to "test")
- * service_module_name (providing service module name, default to the folder containing server.py)
- * service_module (providing server, retrieved thanks to the service module name)
- * async_service_module (providing asynchronous_server)
- * app (providing flask app, default to application within service_module)
+#### Test client
 
-### Sending a GET request
+Providing a `service_module_name` `pytest` fixture will give you access to a [Flask test client](https://pytest-flask.readthedocs.io/en/latest/index.html) (thanks to `pytest-flask`).
+
+As in the following sample:
 
 ```python
-from pytest_layab import *
+import pytest
+from pytest_layab.flask import app
+
+
+@pytest.fixture
+def service_module_name():
+    # Considering main.py exists within a folder named my_module.
+    # And main.py contains a variable named application containing the Flask app.
+    return "my_module.main"
 
 
 def test_get(client):
+    # Perform a GET request on your application on /my_endpoint endpoint.
     response = client.get('/my_endpoint')
 ```
 
-### Posting JSON
+#### Helper functions
+
+The following examples consider that you already have a [test client](#test-client).
+
+##### Posting JSON
 
 ```python
-from pytest_layab import *
+from pytest_layab.flask import post_json
 
 
 def test_json_post(client):
@@ -44,30 +54,20 @@ def test_json_post(client):
     })
 ```
 
-### Posting file
+##### Posting file
 
 ```python
-from pytest_layab import *
+from pytest_layab.flask import post_file
 
 
 def test_file_post(client):
     response = post_file(client, '/my_endpoint', 'file_name', 'file/path')
 ```
 
-### Posting non JSON
+##### Putting JSON
 
 ```python
-from pytest_layab import *
-
-
-def test_post(client):
-    response = client.post('/my_endpoint', 'data to be sent')
-```
-
-### Putting JSON
-
-```python
-from pytest_layab import *
+from pytest_layab.flask import put_json
 
 
 def test_json_put(client):
@@ -76,104 +76,30 @@ def test_json_put(client):
     })
 ```
 
-### Putting non JSON
+##### Checking HTTP 201 (CREATED) response
+
+`pytest_layab.flask.assert_201` function will ensure that the status code of the response is 201 and that the `location` header contains the expected relative route.
 
 ```python
-from pytest_layab import *
+from pytest_layab.flask import assert_201
 
 
-def test_put(client):
-    response = client.put('/my_endpoint', 'data to be sent')
-```
-
-### Sending a DELETE request
-
-```python
-from pytest_layab import *
-
-
-def test_delete(client):
-    response = client.delete('/my_endpoint')
-```
-
-### Checking response code
-
-```python
-from pytest_layab import *
-
-
-def test_200_ok(client):
-    response = None
-    assert response.status_code == 200
-
-def test_201_created(client):
+def test_created_response(client):
     response = None
     assert_201(response, '/my_new_location')
-
-def test_202_accepted(client):
-    response = None
-    assert_202_regex(response, '/my_new_location/.*')
-
-def test_204_no_content(client):
-    response = None
-    assert_204(response)
-
-def test_303_see_other(client):
-    response = None
-    assert_303_regex(response, '/my_new_location/.*')
 ```
 
-### Checking response JSON
+##### Checking response content
+
+`pytest_layab.flask.assert_file` function will ensure that the response body will have the same content as in the provided file.
 
 ```python
-from pytest_layab import *
+from pytest_layab.flask import assert_file
 
 
-def test_json_exact_content(client):
-    response = None
-    assert response.json == {'expected_key': 'Expected 13 value'}
-```
-
-### Checking response Text
-
-```python
-import re
-
-from pytest_layab import *
-
-
-def test_text_exact_content(client):
-    response = None
-    assert response.get_data(as_text=True) == 'Expected 13 value'
-
-def test_text_with_regular_expression(client):
-    response = None
-    assert re.match('Expected \d\d value', response.get_data(as_text=True))
-
-def test_text_with_content_in_a_file(client):
+def test_with_content_in_a_file(client):
     response = None
     assert_file(response, 'path/to/file/with/expected/content')
-```
-
-### Checking response bytes
-
-```python
-from pytest_layab import *
-
-
-def test_bytes_with_content_in_a_file(client):
-    response = None
-    assert_file(response, 'path/to/file/with/expected/content')
-```
-
-## Basic Assertions
-
-```python
-from pytest_layab import *
-
-
-def test_without_list_order():
-    assert_items_equal({'expected_key': ['First value', 'Second value']}, {'expected_key': ['Second value', 'First value']})
 ```
 
 ## Mocks
@@ -183,6 +109,7 @@ def test_without_list_order():
 You can mock current date-time.
 
 ```python
+import datetime
 import module_where_datetime_is_used
 
 
