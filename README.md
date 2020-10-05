@@ -1,4 +1,4 @@
-<h2 align="center">PyTest fixtures and assertions functions for layab</h2>
+<h2 align="center">pytest fixtures and assertions functions for layab</h2>
 
 <p align="center">
 <a href="https://pypi.org/project/pytest-layab/"><img alt="pypi version" src="https://img.shields.io/pypi/v/pytest-layab"></a>
@@ -9,17 +9,25 @@
 <a href="https://pypi.org/project/pytest-layab/"><img alt="Number of downloads" src="https://img.shields.io/pypi/dm/pytest-layab"></a>
 </p>
 
-Provide helper and mocks to ease test cases writing.
+`pytest` fixtures and utility functions that can be used to test [`layab`](https://github.com/Colin-b/layab) based REST API.
 
-## Service testing
-
+- [Flask based API](#flask)
+  - [Test client](#test-client)
+  - [Sending JSON (as POST)](#posting-json)
+  - [Sending file (as POST)](#posting-file)
+  - [Sending JSON (as PUT)](#putting-json)
+  - [Assert CREATED response](#checking-http-201-created-response)
+  - [Compare response content to a file](#checking-response-content)
+ 
 ### Flask
 
 #### Test client
 
-Providing a `service_module_name` `pytest` fixture will give you access to a [Flask test client](https://pytest-flask.readthedocs.io/en/latest/index.html) (thanks to `pytest-flask`).
+You can have access to the `pytest-flask` `client` fixture for your [`layab`](https://github.com/Colin-b/layab) based REST API.
 
-As in the following sample:
+Providing a `service_module_name` `pytest` fixture will give you access to a [Flask test client](https://pytest-flask.readthedocs.io/en/latest/index.html) and ensure `SERVER_ENVIRONMENT` environment variable will be set to `test` in order to load test specific configuration.
+
+`pytest-flask` must be installed for the following sample to work:
 
 ```python
 import pytest
